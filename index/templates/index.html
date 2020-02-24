@@ -92,7 +92,7 @@
                   </h3>
 									<p>
                     זהו אתגר של פיתוח יכולות, והוא מהווה מסלול ההזנקה של בטא. כל חברי בטא משתתפים בCode Ninja ומטרתם לצבור נקודות מוניטין עד שהם מגיעים ל"חגורה שחורה", אשר משמעותה שאותו חבר בטא צבר מספיק ידע ונסיון באתגרים שונים בשביל להתחיל להתרכז בפרוייקטים צוותיים.
-                  </p>
+									</p>
                   <h4>
                     מנהל המשחק
                   </h4>
@@ -142,13 +142,13 @@
                     Code Ninja צבעי דרגה של
                   </h5>
                   <ul class="actions fit ranks">
-					  <li class="ninja"><span class="button rank fit">Ninja</span></li>
-					  <li class="brown"><span class="button rank fit">17-19</span></li>
-					  <li class="purple"><span class="button rank fit">14-16</span></li>
-					  <li class="blue"><span class="button rank fit">11-13</span></li>
-					  <li class="green"><span class="button rank fit">8-10</span></li>
-					  <li class="orange"><span class="button rank fit">5-7</span></li>
-					  <li class="yellow"><span class="button rank fit">2-4</span></li>
+										<li class="ninja"><span class="button rank fit">Ninja</span></li>
+										<li class="brown"><span class="button rank fit">17-19</span></li>
+										<li class="purple"><span class="button rank fit">14-16</span></li>
+										<li class="blue"><span class="button rank fit">11-13</span></li>
+										<li class="green"><span class="button rank fit">8-10</span></li>
+										<li class="orange"><span class="button rank fit">5-7</span></li>
+										<li class="yellow"><span class="button rank fit">2-4</span></li>
                     <li class="white"><span class="button rank fit">0-1</span></li>
                   </ul>
                   <h4>
@@ -161,13 +161,22 @@
                   <h4>
                     בתים
                   </h4>
-                  <p>
+									<div>
+									<p>
                     כל נינג'ה רשאי לייסד בית. הנינג'ות של הבית הן ראשי הבית.</br>
 עם ההגעה לחגורה צהובה, הנינג'ות מודיעות לבטאי לאיזה בית הוא שייך (בעיקר על בסיס אופי העבודה שלו ותחומי העניין שלו.)</br>
 לכל בית דגשי מינטור שונים ותחומי עניין שונים.</br>
 החל מחגורה כחולה נדרש הבטאי לפעול או למנטר כחלק מלפחות שני בתים שהוא עד כה לא השתייך אליהם, בתיאום והסכמה של הנינג'ות המובילות באותם בתים. לאחר שצורף לעוד שני בתים לפחות, יוכל לעלות לחגורה חומה.</br>
-כל חגורה חומה ישתייך לשלושה בתים עד שיהפוך לנינג'ה, ואז יוכל לקבוע את ההשתייכות שלו או לפתוח בית חדש.
-                  </p>
+כל חגורה חומה ישתייך לשלושה בתים עד שיהפוך לנינג'ה, ואז יוכל לקבוע את ההשתייכות שלו או לפתוח בית חדש.</br>
+									</p>
+										<div class="house-sym">
+											{% for house in houses %}
+												{% if house.image %}
+													<img src="{{ house.image.url }}" height="60" width="60">
+												{% endif %}
+											{% endfor %}
+										</div>
+									</div>
                   <h4>
                     משתתפים באתגר Code Ninja
                   </h4>

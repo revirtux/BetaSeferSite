@@ -2497,6 +2497,7 @@ input, select, textarea {
 			top: 50%;
 			padding-left: 2px;
 			transform: translateY(11.5%);
+			margin: -0.5em 0;
 		}
 
 		.image-td {
@@ -3417,3 +3418,9 @@ input, select, textarea {
 			}
 
 	}
+
+.house-sym {
+	text-align: center;
+	margin-top: -1.75em;
+	margin-bottom: 0.5em;
+}
