@@ -14,6 +14,7 @@ class Subject:
 @dataclass
 class Player:
     nick: str
+    note: str
     rank: Rank
     first: Subject
     sec1: Subject

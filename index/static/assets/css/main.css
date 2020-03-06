@@ -23,7 +23,8 @@ section, summary, time, mark, audio, video {
 	border: 0;
 	font-size: 100%;
 	font: inherit;
-	vertical-align: baseline;}
+	vertical-align: baseline;
+}
 
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -209,6 +210,7 @@ input, select, textarea {
 		font-size: 0.9em;
 		margin: 0 0.25em;
 		padding: 0.25em 0.65em;
+		direction: ltr;
 	}
 
 	pre {
@@ -1709,8 +1711,8 @@ input, select, textarea {
 
 	.container {
 		margin: 0 auto;
-		max-width: calc(100% - 4.5em);
-		width: 45em;
+		max-width: 91.5%;
+		width: 85%;
 	}
 
 		.container.xsmall {
@@ -2459,7 +2461,7 @@ input, select, textarea {
 		}
 
 			ul.icons li:last-child {
-				padding-right: 0 !important;
+				padding-left: 1em !important;
 			}
 
 			ul.icons li .icon:before {
@@ -2502,7 +2504,7 @@ input, select, textarea {
 
 		.image-td {
 			position: relative;
-			display: inline-table;
+			white-space: nowrap;
 		}
 
 		table th {
@@ -2877,6 +2879,10 @@ input, select, textarea {
 
 				#header > footer .icons li a {
 					color: #b7eadc;
+				}
+
+				#header > footer > ul.icons {
+					padding-right: 0;
 				}
 
 		#header > nav {
@@ -3423,4 +3429,12 @@ input, select, textarea {
 	text-align: center;
 	margin-top: -1.75em;
 	margin-bottom: 0.5em;
+}
+
+.house-sym > img:not(first-child) {
+	margin-right: 1%;
+}
+
+td {
+	text-align: center;
 }

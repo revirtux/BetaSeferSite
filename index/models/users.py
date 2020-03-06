@@ -1,5 +1,3 @@
-import os
-
 from django.db import models
 from django.db.models import CharField, BooleanField, ForeignKey, ManyToManyField, ImageField
 
@@ -7,14 +5,15 @@ from .houses import House
 
 USER_STATES = {
     'Player':'G',
-    'Pensia':'P',
+    'Pensioner':'P',
     'Zombie':'Z',
-    'Hanzaha':'H',
+    'Commemoration':'C',
     'Testing': 'T'
 }
 
 class User(models.Model):
     nick = CharField(max_length=30)
+    note = CharField(max_length=256, default="")
     mail = CharField(max_length=100, default="user@example.com")
     security = BooleanField(default=False)
     ninja = BooleanField(default=False)
