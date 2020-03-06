@@ -23,19 +23,19 @@ class Player:
     image: ImageField
 
 def get_rank(score):
-    if 1 >= score: 
+    if score <= 1:
         return Rank(str(score), 'white')
-    elif 4 >= score: 
+    elif score <= 4:
         return Rank(str(score), 'yellow')
-    elif 7 >= score: 
+    elif score <= 7:
         return Rank(str(score), 'orange')
-    elif 10 >= score: 
+    elif score <= 10:
         return Rank(str(score), 'green')
-    elif 13 >= score: 
+    elif score <= 13:
         return Rank(str(score), 'blue')
-    elif 16 >= score: 
+    elif score <= 16:
         return Rank(str(score), 'puple')
-    elif 19 >= score: 
+    elif score <= 19:
         return Rank(str(score), 'brown')
-    else: 
+    else:
         return Rank('ninja', 'ninja')
