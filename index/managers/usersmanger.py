@@ -32,7 +32,7 @@ def dox_user(user: User):
 def get_top_three(solutions: Solution) -> (int, list):
     categories = Counter()
     for sol in solutions:
-        categories[sol.challenge.category.name] += sol.challenge.score
+        categories[sol.challenge.category.name] += sol.get_score()
 
     return  reduce(lambda val, tup: tup[1] + val, categories.most_common(3), 0), \
             [Subject(name, score) for name, score in (categories.most_common(3) + [('Null', 0)] * 3)]
