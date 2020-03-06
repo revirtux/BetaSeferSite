@@ -13,7 +13,7 @@ USER_STATES = {
 
 class User(models.Model):
     nick = CharField(max_length=30)
-    note = CharField(max_length=256, default="")
+    note = CharField(max_length=256, default="", blank=True)
     mail = CharField(max_length=100, default="user@example.com")
     security = BooleanField(default=False)
     ninja = BooleanField(default=False)
