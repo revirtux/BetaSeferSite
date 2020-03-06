@@ -25,6 +25,6 @@ def initdb():
 
 
 def init_houses():
-    for house_name in ('Malory', 'Pie', 'Gopher', 'Vector', 'Dworkin', 'Gene'):
+    for house_name in ('Malory', 'Pie', 'Gopher', 'Vector', 'Dworkin', 'Gene', 'Greenhouse'):
         house = House(name=house_name, moto="this")
         house.save()
