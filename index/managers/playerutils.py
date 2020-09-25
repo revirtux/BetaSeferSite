@@ -19,7 +19,7 @@ class Player:
     first: Subject
     sec1: Subject
     sec2: Subject
-    houses: str
+    houses: list
     total: int
     image: ImageField
 
