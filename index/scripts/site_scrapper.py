@@ -214,13 +214,6 @@ def import_challenges(table) -> list:
     for row in table.tbody.find_all('tr')[1:]:
         challenge_name, points, _, description, _, dl = row.find_all('td')
 
-        description = description.text.replace('\n', '')
-
-        description += "".join([char for char in points if char.isalpha()])
-
-        points = points.text.replace('\n', '')
-        points = int("".join([char for char in points if char.isdigit()]))
-
         dl = dl.text.replace('\n', '')
 
         if dl == '':
@@ -253,7 +246,7 @@ def solved_challenges_table_organize():
         solved_challenges.append(
             {'subject': table_names[table_name], 'challenges': challenges_and_solvers})
 
-    return solved_challenges
+    return solved_challenges[:-1]
 
 
 def import_solved_challenges(table) -> list:
@@ -347,21 +340,6 @@ def get_challenges_names():
     challenges_names = import_challenges_table_name(site_scrapper.soup)
 
     return challenges_names
-
-
-def get_solutions_tables():
-    pass
-    site_scrapper = SiteScrapper()
-    solutions_tables = soup_solutions_tables(site_scrapper.soup)
-
-    return solutions_tables
-
-
-def get_solutions_names():
-    # site_scrapper = SiteScrapper()
-
-    # solutions_names = 
-    pass
 
 
 def main():
