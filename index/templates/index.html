@@ -12,16 +12,15 @@
       <section id="header">
         <header>
           <span class="image avatar"><img src="{% static "images/avatar.jpg" %}" alt="" /></span>
-          <h1 id="logo"><a href="#">The Beta Program</a></h1>
+          <h1 id="logo"><a href="/#">The Beta Program</a></h1>
           <p>לימודי מחשבים בשיטת בטא
           </p>
         </header>
         <nav id="nav">
           <ul>
             <li><a href="#whoweare" class="active">מי אנחנו?</a></li>
+            <li><a href="#houses">הבתים של בטא</a></li>
             <li><a href="#code-ninja">Code Ninja</a></li>
-            <li><a href="#three">A Few Accomplishments</a></li>
-            <li><a href="#four">Contact</a></li>
           </ul>
         </nav>
         <footer>
@@ -84,7 +83,31 @@
                 </div>
               </section>
 
-            <!-- code-ninja -->
+            <!-- houses -->
+              <section id="houses">
+                <div class="container">
+                  <h3>
+                    הבתים של בטא
+                  </h3>
+                  <div>
+                  <p>
+                    כל נינג'ה רשאי לייסד בית. הנינג'ות של הבית הן ראשי הבית.</br>
+עם ההגעה לחגורה צהובה, הנינג'ות מודיעות לבטאי לאיזה בית הוא שייך (בעיקר על בסיס אופי העבודה שלו ותחומי העניין שלו.)</br>
+לכל בית דגשי מינטור שונים ותחומי עניין שונים.</br>
+החל מחגורה כחולה נדרש הבטאי לפעול או למנטר כחלק מלפחות שני בתים שהוא עד כה לא השתייך אליהם, בתיאום והסכמה של הנינג'ות המובילות באותם בתים. לאחר שצורף לעוד שני בתים לפחות, יוכל לעלות לחגורה חומה.</br>
+כל חגורה חומה ישתייך לשלושה בתים עד שיהפוך לנינג'ה, ואז יוכל לקבוע את ההשתייכות שלו או לפתוח בית חדש.</br>
+                  </p>
+                    <div class="house-sym">
+                      {% for house in houses %}
+                        {% if house.image %}
+                          <img src="{{ house.image.url }}" height="60" width="auto" alt="{{ house.name }}" onclick="window.location='/{{house.name}}'">
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <!-- code-ninja -->
               <section id="code-ninja">
                 <div class="container">
                   <h3>
@@ -159,25 +182,6 @@
 אולי כדאי שתלכו ב<a href="#">עקבות חברי בטא אחרים</a>...
                   </p>
                   <h4>
-                    בתים
-                  </h4>
-                  <div>
-                  <p>
-                    כל נינג'ה רשאי לייסד בית. הנינג'ות של הבית הן ראשי הבית.</br>
-עם ההגעה לחגורה צהובה, הנינג'ות מודיעות לבטאי לאיזה בית הוא שייך (בעיקר על בסיס אופי העבודה שלו ותחומי העניין שלו.)</br>
-לכל בית דגשי מינטור שונים ותחומי עניין שונים.</br>
-החל מחגורה כחולה נדרש הבטאי לפעול או למנטר כחלק מלפחות שני בתים שהוא עד כה לא השתייך אליהם, בתיאום והסכמה של הנינג'ות המובילות באותם בתים. לאחר שצורף לעוד שני בתים לפחות, יוכל לעלות לחגורה חומה.</br>
-כל חגורה חומה ישתייך לשלושה בתים עד שיהפוך לנינג'ה, ואז יוכל לקבוע את ההשתייכות שלו או לפתוח בית חדש.</br>
-                  </p>
-                    <div class="house-sym">
-                      {% for house in houses %}
-                        {% if house.image %}
-                          <img src="{{ house.image.url }}" height="60" width="auto" alt="{{ house.name }}">
-                        {% endif %}
-                      {% endfor %}
-                    </div>
-                  </div>
-                  <h4>
                     משתתפים באתגר Code Ninja
                   </h4>
                   <div>
@@ -214,7 +218,9 @@
                             <td>{{ player.sec2.score }}</td>
                             <td {% if player.houses|length %}class="image-td"{% endif %}>
                               {% for house in player.houses %}
+                                {% if house.image %}
                                 <img src="{{ house.image.url }}" height="35"/>
+                                {% endif %}
                               {% endfor %}
                             </td>
                           </tr>
@@ -263,7 +269,9 @@
                             <td>{{ zombie.sec2.score }}</td>
                             <td {% if zombie.houses|length %}class="image-td"{% endif %}>
                               {% for house in zombie.houses %}
-                                <img src="{{ house.image.url }}" height="35"/>
+                                {% if house.image %}
+                                  <img src="{{ house.image.url }}" height="35"/>
+                                {% endif %}
                               {% endfor %}
                             </td>
                           </tr>
@@ -310,7 +318,9 @@
                             <td>{{ pensioner.sec2.score }}</td>
                             <td {% if pensioner.houses|length %}class="image-td"{% endif %}>
                               {% for house in pensioner.houses %}
-                                <img src="{{ house.image.url }}" height="35"/>
+                                {% if house.image %}
+                                  <img src="{{ house.image.url }}" height="35"/>
+                                {% endif %}
                               {% endfor %}
                             </td>
                           </tr>
@@ -357,7 +367,9 @@
                             <td>{{ commemoration.sec2.score }}</td>
                             <td {% if commemoration.houses|length %}class="image-td"{% endif %}>
                               {% for house in commemoration.houses %}
-                                <img src="{{ house.image.url }}" height="35"/>
+                                {% if house.image %}
+                                  <img src="{{ house.image.url }}" height="35"/>
+                                {% endif %}
                               {% endfor %}
                             </td>
                           </tr>
@@ -369,7 +381,7 @@
                 </div>
               </section>
 
-            <!-- Three -->
+            {% comment %} <!-- Three -->
               <section id="three">
                 <div class="container">
                   <h3>A Few Accomplishments</h3>
@@ -420,7 +432,7 @@
                     </div>
                   </form>
                 </div>
-              </section>
+              </section> {% endcomment %}
 
             <!-- Five -->
             <!--
@@ -756,10 +768,10 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
           </div>
 
         <!-- Footer -->
-          <section id="footer">
+          <section id="footer" dir="ltr" align="center">
             <div class="container">
               <ul class="copyright">
-                <li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                <li>&copy; Beta project. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
               </ul>
             </div>
           </section>

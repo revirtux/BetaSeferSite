@@ -1,15 +1,18 @@
 from dataclasses import dataclass
 from django.db.models import ImageField
 
+
 @dataclass
 class Rank:
     level: str
     color: str
 
+
 @dataclass
 class Subject:
     name: str
     score: int
+
 
 @dataclass
 class Player:
@@ -22,6 +25,7 @@ class Player:
     houses: list
     total: int
     image: ImageField
+
 
 def get_rank(score):
     if score <= 1:
