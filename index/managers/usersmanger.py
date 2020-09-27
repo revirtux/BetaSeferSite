@@ -28,7 +28,7 @@ def get_all_players(state: str = "", house: str = "") -> list:
     return sorted(players, key=lambda p: p.total, reverse=True)
 
 
-def dox_user(user: User):
+def dox_user(user: User) -> Player:
     total, subjects = get_top_three(Solution.objects.filter(user=user))
     return Player(
         user.nick,

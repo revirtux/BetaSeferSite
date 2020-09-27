@@ -15,6 +15,11 @@ from ..managers.usersmanger import update_user
 from ..managers.solutionsmanager import update_solution
 from ..managers.challengesmanager import update_challenge, update_category
 
+MULTYPOINT_CHALLENGES = (
+    u"crackme שימושי כלשהו לצוות רוורסינג", 
+    "Codingbat Python"
+)
+
 
 # update_user(nick: str, state: str, houses: list = [], note: str = "")
 def import_users():
@@ -36,14 +41,16 @@ def import_challenges():
     challenges_tables = get_challenges_tables()
     challenges_name = get_challenges_names()
 
-    all_challenges = import_challenges_organize(challenges_tables, challenges_name)
+    all_challenges = import_challenges_organize(
+        challenges_tables, challenges_name)
 
     for category in all_challenges:
         update_category(category['table_name'])
 
         for challenge in category['challenges']:
             if '/' in challenge['points']:      # here I ignored codewars
-                challenge['points'] = 1     # its just for now to see if it works
+                # its just for now to see if it works
+                challenge['points'] = 1
 
             update_challenge(challenge['challenge_name'],
                              category['table_name'],
@@ -58,12 +65,16 @@ def import_solutions():
 
     for category in all_solved_challenges:
         for challenge in category['challenges']:
-            for solver in challenge['solvers']:     # added user it4n for it to work
+            # added user it4n for it to work
+            for solver in challenge['solvers']:
                 if challenge['challenge_name'] == "codewars":
                     update_codewars(solver, category['subject'])
-
-                    continue
-                update_solution(solver, challenge['challenge_name'], category['subject'])
+                elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES:
+                    update_multipoint(
+                        solver, challenge['challenge_name'], category['subject'])
+                else:
+                    update_solution(
+                        solver, challenge['challenge_name'], category['subject'])
 
 
 def update_codewars(data, category):
@@ -72,22 +83,24 @@ def update_codewars(data, category):
     name = solver_data[0]
     challenges = solver_data[1].replace(',', '').split()
 
-    challenges_data = [{"color": challenges[i], "points": int(challenges[i + 2])} for i in range(0, len(challenges), 3)]
+    challenges_data = [{"color": challenges[i], "points": int(
+        challenges[i + 2])} for i in range(0, len(challenges), 3)]
 
     for codewars_challenge in challenges_data:
         for color, points in codewars_challenge.items():
-            update_solution(name, "Codewars " + color, category['subject'], multipoint=points)
+            update_solution(name, "codewars", category, points)
 
 
 def update_multipoint(data, challenge_name, category):
-    name, points = data.replace(')', '').split(" ")[0], data.replace(')', '').split(" ")[-1]
+    name, points = data.replace(')', '').split(
+        " ")[0], data.replace(')', '').split(" ")[-1]
 
     update_solution(name, challenge_name, category, points)
 
 
 def update_from_old_site():
     # ss = SiteScrapper()
-    #import_users()
-    #import_challenges()
+    # import_users()
+    # import_challenges()
     import_solutions()
     pass

@@ -11,7 +11,7 @@ def update_solution(user: str, challenge: str, category: str, multipoint: int = 
     category_obj = Category.objects.get(name=category)
 
     if not Challenge.objects.filter(name=challenge, category=category_obj).exists():
-        raise Exception(f"update_solution: Challange '{challenge}' not exists!")
+        raise Exception(f"update_solution: Challange '{challenge}' at {category} not exists!")
 
     if not User.objects.filter(nick=user).exists():
         raise Exception(f"update_solution: User '{user}' in {challenge} at {category} not exists!")
