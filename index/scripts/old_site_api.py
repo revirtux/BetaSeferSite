@@ -48,16 +48,14 @@ def import_challenges():
         update_category(category['table_name'])
 
         for challenge in category['challenges']:
-            if '/' in challenge['points']:      # here I ignored codewars
-                # its just for now to see if it works
-                challenge['points'] = 1
+            if challenge['challenge_name'].lower() == "codewars":      # here I ignored codewars
+                continue
 
             update_challenge(challenge['challenge_name'],
                              category['table_name'],
                              challenge['description'],
                              int(challenge['points']),
                              challenge['deadline'])
-
 
 # update_solution(user: str, challenge: str, category: str, multipoint: int = 1):
 def import_solutions():
@@ -77,6 +75,7 @@ def import_solutions():
                         solver, challenge['challenge_name'], category['subject'])
 
 
+
 def update_codewars(data, category):
     solver_data = data.replace(")", "(").split("(")
 
@@ -86,9 +85,15 @@ def update_codewars(data, category):
     challenges_data = [{"color": challenges[i], "points": int(
         challenges[i + 2])} for i in range(0, len(challenges), 3)]
 
-    for codewars_challenge in challenges_data:
-        for color, points in codewars_challenge.items():
-            update_solution(name, "codewars", category, points)
+    for codewars_challenge in range(len(challenges_data)):
+        color, points = challenges_data[codewars_challenge].values()
+        update_challenge("Codewars " + color.title() + " Challenges",
+                         category,
+                         score=codewars_challenge + 1)
+        update_solution(name.replace(" ", ""),
+                        "Codewars " + color.title() + " Challenges",
+                         category,
+                         multipoint=points)
 
 
 def update_multipoint(data, challenge_name, category):
@@ -97,6 +102,10 @@ def update_multipoint(data, challenge_name, category):
 
     update_solution(name, challenge_name, category, points)
 
+
+def cugz_crackme():
+    # wierd sctructre of solvers
+    pass
 
 def update_from_old_site():
     # ss = SiteScrapper()

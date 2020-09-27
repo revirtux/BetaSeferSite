@@ -218,7 +218,7 @@ def import_challenges(table) -> list:
             dl = '-'
 
         challenges.append(dict({'challenge_name': challenge_name.text.replace('\n', ''),
-                                'points': points.text.replace('\n', ''),
+                                'points': int(points.text.replace('\n', '')),
                                 'description': description.text.replace('\n', ''),
                                 'deadline': dl}))
 
