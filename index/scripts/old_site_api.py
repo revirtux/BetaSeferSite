@@ -63,7 +63,6 @@ def import_solutions():
 
     for category in all_solved_challenges:
         for challenge in category['challenges']:
-            # added user it4n for it to work
             for solver in challenge['solvers']:
                 if challenge['challenge_name'] == "codewars":
                     update_codewars(solver, category['subject'])
@@ -73,7 +72,6 @@ def import_solutions():
                 else:
                     update_solution(
                         solver, challenge['challenge_name'], category['subject'])
-
 
 
 def update_codewars(data, category):
@@ -92,8 +90,8 @@ def update_codewars(data, category):
                          score=codewars_challenge + 1)
         update_solution(name.replace(" ", ""),
                         "Codewars " + color.title() + " Challenges",
-                         category,
-                         multipoint=points)
+                        category,
+                        multipoint=points)
 
 
 def update_multipoint(data, challenge_name, category):
@@ -103,13 +101,9 @@ def update_multipoint(data, challenge_name, category):
     update_solution(name, challenge_name, category, points)
 
 
-def cugz_crackme():
-    # wierd sctructre of solvers
-    pass
-
 def update_from_old_site():
-    # ss = SiteScrapper()
     # import_users()
-    # import_challenges()
+    import_challenges()
     import_solutions()
+
     pass
