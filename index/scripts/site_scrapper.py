@@ -1,3 +1,15 @@
+"""
+Import tables from the old sites
+
+----------------------------------------------------------------
+Exceptions:
+----------------------------------------------------------------
+*   row 26: ingnored last 4 tables.
+*   row 29: ignored resources table.
+
+
+"""
+
 import json
 import codecs
 import requests
@@ -12,8 +24,9 @@ ACTIVES_TABLE_INDEX = 1
 ZOMBIES_TABLE_INDEX = 2
 PENSIONS_TABLE_INDEX = 3
 COMMEMORATION_TABLE_INDEX = 4
+NON_TECH_TABLES = 4
 TABLE_OFFSET = 15
-LAST_CHALLENGES_TABLE = 36
+LAST_CHALLENGES_TABLE = 36  # actually 37, ignored resources table
 USELESS_TABLE_1 = 17
 USELESS_TABLE_2 = 19
 MAIN_PAGE_URL = "https://beta.wikiversity.org/wiki/%D7%9C%D7%99%D7%9E%D7%95%D7%93%" \
@@ -25,21 +38,6 @@ class UsersTable:
     status: str
     users: list = field(default_factory=list)
     ninja: bool = False
-
-
-class SiteScrapper:
-    def __init__(self):
-        self.soup = soup_site(MAIN_PAGE_URL)
-
-    def dump_json(self):
-        """dump to json file
-        """
-        pass
-
-    def dumps_json(self):
-        """dump to json string
-        """
-        pass
 
 
 def soup_site(url):
@@ -239,12 +237,14 @@ def solved_challenges_table_organize():
     heads = soup.find_all('h3')
 
     table_names = [table_name.text.replace(
-        '[edit]', '') for table_name in heads if '[edit]' in table_name.text]
+        '[edit]', '').replace(u'אתגרי ', "challenges ") for table_name in heads if '[edit]' in table_name.text][:-NON_TECH_TABLES]
 
-    for table_name in range(len(table_names)):
+    for table_name in range(len(table_names) - NON_TECH_TABLES):
         challenges_and_solvers = import_solved_challenges(tables[table_name])
+
+        table_names[table_name] = " ".join(table_names[table_name].split()[::-1])
         solved_challenges.append(
-            {'subject': table_names[table_name], 'challenges': challenges_and_solvers})
+            {'subject': table_names[table_name].title(), 'challenges': challenges_and_solvers})
 
     return solved_challenges[:-1]
 
@@ -321,23 +321,23 @@ def soup_challenges_tables(soup):
 
 
 def get_main_tables():
-    site_scrapper = SiteScrapper()
-    main_tables = soup_main_tables(site_scrapper.soup)
+    site_scrapper = soup_site(MAIN_PAGE_URL)
+    main_tables = soup_main_tables(site_scrapper)
 
     return main_tables
 
 
 def get_challenges_tables():
-    site_scrapper = SiteScrapper()
-    challenges_tables = soup_challenges_tables(site_scrapper.soup)
+    site_scrapper = soup_site(MAIN_PAGE_URL)
+    challenges_tables = soup_challenges_tables(site_scrapper)
 
     return challenges_tables
 
 
 def get_challenges_names():
-    site_scrapper = SiteScrapper()
+    site_scrapper = soup_site(MAIN_PAGE_URL)
 
-    challenges_names = import_challenges_table_name(site_scrapper.soup)
+    challenges_names = import_challenges_table_name(site_scrapper)
 
     return challenges_names
 

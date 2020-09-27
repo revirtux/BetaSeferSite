@@ -66,7 +66,6 @@ def update_user(nick: str, state: str, houses: list = [], note: str = "", mail: 
         user.ninja = ninja
 
         for house in houses:
-            print(house.title())
             user.houses.add(House.objects.get(name=house.title()))
         
         user.save()
@@ -77,7 +76,6 @@ def update_user(nick: str, state: str, houses: list = [], note: str = "", mail: 
         user.save()
 
         for house in houses:
-            print(house.title())
             user.houses.add(House.objects.get(name=house.title()))
         
         user.save()
