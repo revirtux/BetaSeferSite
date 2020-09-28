@@ -35,7 +35,7 @@ def get_rank(score):
     elif score <= 13:
         return Rank(str(score), 'blue')
     elif score <= 16:
-        return Rank(str(score), 'puple')
+        return Rank(str(score), 'purple')
     elif score <= 19:
         return Rank(str(score), 'brown')
     else:
