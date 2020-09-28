@@ -8,6 +8,7 @@ urlpatterns = [
     path('cleardb', views.cleardb, name='cleardb'),
     path('init_houses', views.init_houses, name='init_houses'),
     path('scrap', views.import_old_site, name='scrap'),
-    path('<slug:house_name>.css', views.dynamic_css, name='dynamic_css'),
-    path('<slug:house_name>', views.house_path, name='house_path')
+    path('house/<slug:house_name>.css', views.dynamic_css, name='dynamic_css'),
+    path('house/<slug:house_name>', views.house_path, name='house_path'),
+    path('challenges/<slug:category_name>', views.challenges_path, name='challenges_path')
 ]

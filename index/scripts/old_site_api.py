@@ -13,10 +13,11 @@ from .site_scrapper import users_tables_organize, get_main_tables, solved_challe
 from .site_scrapper import import_challenges_organize, get_challenges_tables, get_challenges_names
 from ..managers.usersmanger import update_user
 from ..managers.solutionsmanager import update_solution
-from ..managers.challengesmanager import update_challenge, update_category
+from ..managers.challengesmanager import update_challenge
+from ..managers.categoriesmanager import update_category
 
 MULTYPOINT_CHALLENGES = (
-    u"crackme שימושי כלשהו לצוות רוורסינג", 
+    u"crackme שימושי כלשהו לצוות רוורסינג",
     "Codingbat Python"
 )
 
@@ -57,6 +58,7 @@ def import_challenges():
                              int(challenge['points']),
                              challenge['deadline'])
 
+
 # update_solution(user: str, challenge: str, category: str, multipoint: int = 1):
 def import_solutions():
     all_solved_challenges = solved_challenges_table_organize()
@@ -66,6 +68,7 @@ def import_solutions():
             for solver in challenge['solvers']:
                 if challenge['challenge_name'] == "codewars":
                     update_codewars(solver, category['subject'])
+                    continue
                 elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES:
                     update_multipoint(
                         solver, challenge['challenge_name'], category['subject'])
@@ -85,13 +88,14 @@ def update_codewars(data, category):
 
     for codewars_challenge in range(len(challenges_data)):
         color, points = challenges_data[codewars_challenge].values()
-        update_challenge("Codewars " + color.title() + " Challenges",
+        update_challenge("Codewars " + color.title(),
                          category,
                          score=codewars_challenge + 1)
         update_solution(name.replace(" ", ""),
-                        "Codewars " + color.title() + " Challenges",
+                        "Codewars " + color.title(),
                         category,
                         multipoint=points)
+        print(name.replace(" ", ""), "Codewars " + color.title(), category, points)
 
 
 def update_multipoint(data, challenge_name, category):
@@ -103,7 +107,7 @@ def update_multipoint(data, challenge_name, category):
 
 def update_from_old_site():
     # import_users()
-    import_challenges()
+    # import_challenges()
     import_solutions()
 
     pass

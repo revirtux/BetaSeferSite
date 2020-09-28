@@ -21,6 +21,7 @@
             <li><a href="#whoweare" class="active">מי אנחנו?</a></li>
             <li><a href="#houses">הבתים של בטא</a></li>
             <li><a href="#code-ninja">Code Ninja</a></li>
+            <li><a href="#challenges">רשימת האתגרים</a></li>
           </ul>
         </nav>
         <footer>
@@ -100,7 +101,7 @@
                     <div class="house-sym">
                       {% for house in houses %}
                         {% if house.image %}
-                          <img src="{{ house.image.url }}" height="60" width="auto" alt="{{ house.name }}" onclick="window.location='/{{house.name}}'">
+                          <img src="{{ house.image.url }}" height="60" width="auto" alt="{{ house.name }}" onclick="window.location='/house/{{house.name}}'">
                         {% endif %}
                       {% endfor %}
                     </div>
@@ -386,23 +387,20 @@
                   <section>
                     <div class="box alt">
                       <div class="row gtr-50 gtr-uniform">
-                        <div class="col-4">
+                        {% for category in categories %}
+                        <div class="col-4 container-tile">
                           <span class="image fit hover-over">
+                          {%if category.banner %}
+                            <img src="{{ category.banner.url }}" alt="" />
+                          {%else %}
                             <img src="{% static "images/pic01.jpg" %}" alt="" />
+                          {%endif %}
                             <a href="#" class="text">
-                              <h2>C Challenges</h2>
-                              <h3>The best C Challenges ever!</h3>
+                              <h2>{{ category.name }}</h2>
                             </a>
                           </span>
                         </div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic02.jpg" %}" alt="" />hello world</span></div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic03.jpg" %}" alt="" />hello world</span></div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic02.jpg" %}" alt="" />hello world</span></div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic03.jpg" %}" alt="" />hello world</span></div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic01.jpg" %}" alt="" />hello world</span></div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic03.jpg" %}" alt="" />hello world</span></div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic01.jpg" %}" alt="" />hello world</span></div>
-                        <div class="col-4"><span class="image fit hover-over"><img src="{% static "images/pic02.jpg" %}" alt="" />hello world</span></div>
+                        {% endfor %}
                       </div>
                     </div>
                   </section>

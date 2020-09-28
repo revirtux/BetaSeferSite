@@ -237,7 +237,7 @@ def solved_challenges_table_organize():
     heads = soup.find_all('h3')
 
     table_names = [table_name.text.replace(
-        '[edit]', '').replace(u'אתגרי ', "challenges ") for table_name in heads if '[edit]' in table_name.text][:-NON_TECH_TABLES]
+        '[edit]', '').replace(u'אתגרי ', "") for table_name in heads if '[edit]' in table_name.text][:-NON_TECH_TABLES]
 
     for table_name in range(len(table_names) - NON_TECH_TABLES):
         challenges_and_solvers = import_solved_challenges(tables[table_name])
@@ -340,32 +340,3 @@ def get_challenges_names():
     challenges_names = import_challenges_table_name(site_scrapper)
 
     return challenges_names
-
-
-def main():
-    main_tables = get_main_tables()
-    challenges_tables = get_challenges_tables()
-
-    # Dump users to json
-    users = users_tables_organize(main_tables)
-    write_content("users\\json_users.json", users)
-
-    games = games_tables_organize(main_tables)
-    for game in games:
-        write_content("games\\" + game['name'] + ".json", game['ranks'])
-
-    solved_challenges = solved_challenges_table_organize()
-    for solved_challenge in solved_challenges:
-        write_content('solved_challenges\\' +
-                      solved_challenge['subject'] + '.json', solved_challenge)
-
-    challenges = import_challenges_organize(challenges_tables, challenges)
-    for solved_challenge in solved_challenges:
-        write_content('solved_challenges\\' +
-                      solved_challenge['subject'] + '.json', solved_challenge)
-
-    pwn_game = get_pwn_game(main_tables[PWN_GAME_TABLE_INDEX])
-    write_content("Ninja_games\\pwn_game.json", pwn_game)
-
-    projects = limbo_projects(main_tables[LIMBO_PROJECTS_TABLE_INDEX])
-    write_content("projects\\limbo_projects.json", projects)
