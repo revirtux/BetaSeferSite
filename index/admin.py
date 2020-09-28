@@ -49,8 +49,15 @@ class UserAdmin(GeneralAdmin):
     list_display = ('nick', levelfunc, user_color)
 
 class ChallengeAdmin(GeneralAdmin):
+    def get_category(self, obj):
+        return obj.category.name
+    get_category.short_description = 'Category'
+    get_category.admin_order_field = 'category__name'
+
     list_filter = ('category',)
     search_fields = ('name', )
+
+    list_display = ('name', 'get_category', 'score')
 
 class SolutionAdmin(GeneralAdmin):
     def get_nick(self, obj):
