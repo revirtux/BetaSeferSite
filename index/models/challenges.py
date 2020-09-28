@@ -9,7 +9,7 @@ class Challenge(models.Model):
     description = CharField(max_length=256)
     score = IntegerField(default=1)
     category = ForeignKey(Category, on_delete=models.CASCADE, default=None)
-    deadline = CharField(max_length=20, default="", blank=True)
+    deadline = CharField(max_length=256, default="", blank=True)
 
     def __str__(self):
         return f"{self.name}"

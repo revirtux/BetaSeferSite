@@ -194,7 +194,7 @@ def import_challenges_table_name(soup) -> list:
                 'span', class_="toctext")[1:]]
 
             break
-    challenges_table_names = [{'table_name': challenges_table_names[i], 'challenges': [
+    challenges_table_names = [{'table_name': challenges_table_names[i].replace(" Challenges", ""), 'challenges': [
     ]} for i in range(len(challenges_table_names))]
 
     return challenges_table_names
@@ -244,7 +244,7 @@ def solved_challenges_table_organize():
 
         table_names[table_name] = " ".join(table_names[table_name].split()[::-1])
         solved_challenges.append(
-            {'subject': table_names[table_name].title(), 'challenges': challenges_and_solvers})
+            {'subject': table_names[table_name], 'challenges': challenges_and_solvers})
 
     return solved_challenges[:-1]
 

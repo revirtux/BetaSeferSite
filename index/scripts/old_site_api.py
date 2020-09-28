@@ -95,7 +95,6 @@ def update_codewars(data, category):
                         "Codewars " + color.title(),
                         category,
                         multipoint=points)
-        print(name.replace(" ", ""), "Codewars " + color.title(), category, points)
 
 
 def update_multipoint(data, challenge_name, category):
@@ -106,8 +105,6 @@ def update_multipoint(data, challenge_name, category):
 
 
 def update_from_old_site():
-    # import_users()
-    # import_challenges()
+    import_users()
+    import_challenges()
     import_solutions()
-
-    pass
