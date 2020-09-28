@@ -3,7 +3,7 @@ from django.db.models import CharField, BooleanField, ForeignKey, ImageField
 
 class House(models.Model):
     name = models.CharField(max_length=20, default="Untitled")
-    moto = models.CharField(max_length=256)
+    motto = models.CharField(max_length=256)
     image = ImageField(upload_to="houses", blank=True, null=True)
 
     def __str__(self):
