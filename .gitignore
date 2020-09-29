@@ -127,3 +127,7 @@ dmypy.json
 # vscode folder 
 .vscode
 index/migrations/
+
+#Ignore Python virtual environments
+Scripts/
+pyvenv.cfg
