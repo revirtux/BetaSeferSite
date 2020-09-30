@@ -20,6 +20,11 @@ def update_category(name: str, description: str = "", manager: str = ""):
 def get_all_categories():
     return Category.objects.all()
 
-def get_all_challenges(category: Category):
-    return Challenge.objects.filter(category__name=Category.name)
+def get_all_challenges(category_name: str):
+    return Challenge.objects.filter(category__name=category_name)
 
+def get_game(category: Category):
+    try:
+        return category.game
+    except:
+        return None

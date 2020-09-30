@@ -52,6 +52,10 @@ def get_top_three(solutions: Solution) -> (int, list):
         [Subject(name, score) for name, score in (
             categories.most_common(3) + [('Null', 0)] * 3)]
 
+def get_category_score(user: User, category):
+    # Returns tuple of Rank, score of a user within a certain category
+    score = sum([sol.get_score() for sol in Solution.objects.filter(user=user, challenge__category=category)])
+    return get_rank(score // 10, False), score
 
 def update_user(nick: str, state: str, houses: list = [], note: str = "", mail: str = "user@example.com", security: bool = False, ninja: bool = False) -> None:
     if state not in USER_STATES:

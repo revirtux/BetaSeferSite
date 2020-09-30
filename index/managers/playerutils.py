@@ -27,7 +27,7 @@ class Player:
     image: ImageField
 
 
-def get_rank(score):
+def get_rank(score, score_ninjafy=True):
     if score <= 1:
         return Rank(str(score), 'white')
     elif score <= 4:
@@ -43,4 +43,7 @@ def get_rank(score):
     elif score <= 19:
         return Rank(str(score), 'brown')
     else:
-        return Rank('ninja', 'ninja')
+        if score_ninjafy:
+            return Rank('ninja', 'ninja')
+        else:
+            return Rank(str(score), 'ninja')

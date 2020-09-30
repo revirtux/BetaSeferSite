@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404
 from django.template import loader
-from .managers import usersmanger, housesmanager, categoriesmanager, common
+from .managers import usersmanger, housesmanager, categoriesmanager, common, gamesmanager
 from .scripts.old_site_api import update_from_old_site
 
 
@@ -69,18 +69,22 @@ def dynamic_css(request, house_name):
     resp['Content-Type'] = 'text/css'
     return resp
 
-
 def challenges_path(request, category_name):
+    # TODO: add later the game table after the caching work
     category_list = categoriesmanager.get_all_categories().filter(name=category_name)
     if len(category_list) != 0:
         category = category_list[0]
         template = loader.get_template('challenge.html')
-        challenges = categoriesmanager.get_all_challenges(category)
+        challenges = categoriesmanager.get_all_challenges(category.name)
+        game = categoriesmanager.get_game(category)
+        #ranks = gamesmanager.get_game_data(game) if game else []
         return HttpResponse(template.render(
             {
                 'challenges': enumerate(challenges, 1),
                 'amount': len(challenges),
-                'category': category
+                'category': category,
+                'ranks': [],
+                'game_managers': None
             }, request))
     else:
-        return Http404("<p>No such category</p>")
+        return HttpResponse(Http404("<p>No such category</p>"))

@@ -1,93 +1,170 @@
 {% load static %}<!DOCTYPE HTML>
 <html>
   <head>
-    <title>The beta program</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="{% static "assets/css/main.css" %}" />
+	<title>The beta program</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="{% static "assets/css/main.css" %}" />
   </head>
   <body class="is-preload">
 
-    <!-- Header -->
-      <section id="header">
-        <header>
-          <span class="image avatar"><img src="{% static "images/avatar.jpg" %}" alt="" /></span>
-          <h1 id="logo"><a href="/#">אתגרי {{ category.name }}</a></h1>
+	<!-- Header -->
+	  <section id="header">
+		<header>
+		  <span class="image avatar"><img src="{% static "images/avatar.jpg" %}" alt="" /></span>
+		  <h1 id="logo"><a href="/#">אתגרי {{ category.name }}</a></h1>
 		  <p>יש {{ amount }} אתגרים, בוא נראה אם אתה תצליח לפתור את כולם...</p>
-        </header> 
-        <footer>
-          <ul class="icons">
-            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-            <li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
-            <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+		</header> 
+		{% if category.game %}
+		<nav id="nav">
+          <ul>
+            <li><a href="#challenges">רשימת האתגרים</a></li>
+            <li><a href="#game">משחק {{ category.game.name }}</a></li>
           </ul>
-        </footer>
-      </section>
+        </nav>
+		{% endif %}
+		<footer>
+		  <ul class="icons">
+			<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+			<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+			<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+			<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+			<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+		  </ul>
+		</footer>
+	  </section>
 
-    <!-- Wrapper -->
-      <div id="wrapper">
+	<!-- Wrapper -->
+	  <div id="wrapper">
 
-        <!-- Main -->
-          <div id="main">
-              <section id="challenges">
-                <div class="container">
-                  <h3>טבלאת האתגרים</h3>
-                  <section>
-                  <div>
-                    <ul class="feature-icons">
-                      <li class="icon solid fa-user-cog">מנהל הקטגוריה: {{ category.manager }}</li>
-                    </ul>
-                    <div class="table-wrapper">
-                      <table class="alt">
-                        <thead>
-                          <tr>
-                            <th>מס</th>
-                            <th>שם האתגר</th>
-                            <th>תיאור האתגר</th>
-                            <th>נק'</th>
-                            <th>דד-ליין</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for index, chal in challenges %}
-                          <tr>
-                            <td>{{ index }}</td>
-                            <td>{{ chal.name }}</td>
-                            <td>{{ chal.description }}</td>
-                            <td>{{ chal.score }}</td>
-                            <td>{{ chal.deadline }}</td>
-                          </tr>
-                          {% endfor %}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  </section>
-                </div>
-              </section>
+		<!-- Main -->
+		  <div id="main">
+		  	  <section id="banner">
+				<div class="image main" data-position="center">
+					{% if category.banner %}
+						<img src="{{ category.banner.url }}" alt="" />
+					{% else %}
+						<img src="{% static "images/banner.jpg" %}" alt="" />
+					{% endif%}
+				</div>
+			  </section>
+			  
+			  <section id="challenges">
+				<div class="container">
+				  <h3>טבלאת האתגרים</h3>
+				  <section>
+				  <div>
+				  	<ul class="feature-icons">
+					{% if category.description %}
+					  <li class="icon solid fa-info">{{ category.description }}</li>
+					{% endif %}
+					</ul>
+					<ul class="feature-icons">
+					{% if category.manager %}
+					  <li class="icon solid fa-user-cog">מנהל הקטגוריה: {{ category.manager }}</li>
+					{% else %}
+					  <li class="icon solid fa-user-cog">כרגע אין לקטגוריה מנהל</li>
+					{% endif %}
+					</ul>
+					<div class="table-wrapper">
+					  <table class="alt">
+						<thead>
+						  <tr>
+							<th>מס</th>
+							<th>שם האתגר</th>
+							<th>תיאור האתגר</th>
+							<th>נק'</th>
+							<th>דד-ליין</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  {% for index, chal in challenges %}
+						  <tr>
+							<td>{{ index }}</td>
+							<td>{{ chal.name }}</td>
+							<td>{{ chal.description }}</td>
+							<td>{{ chal.score }}</td>
+							<td>{{ chal.deadline }}</td>
+						  </tr>
+						  {% endfor %}
+						</tbody>
+					  </table>
+					</div>
+				  </div>
+				  </section>
+				</div>
+			  </section>
+			  
+			  {% if category.game %}
+			  <section id="game">
+			  	<div class="container">
+				  <h3>משחק {{ category.game.name }}</h3>
+				  <section>
+				  <div>
+					<ul class="feature-icons">
+					  <li class="icon solid fa-user-cog">מנהל/י הקטגוריה: 
+					  {% for manager in game_managers %} </br> {{ manager }} {% endfor %}
+					  </li>
+					</ul>
+					<ul class="feature-icons">
+					  <li class="icon solid fa-plus" style="width: 100%">{{ category.game.getting_points_desc }}</li>
+					</ul>
+					<ul class="feature-icons">
+					  <li class="icon solid fa-arrow-up" style="width: 100%">{{ category.game.leveling_desc }}</li>
+					</ul>
+					<div class="table-wrapper">
+					  <table class="alt">
+						<thead>
+						  <tr>
+							<th>מס</th>
+							<th>משתתף</th>
+							<th>דרגה</th>
+							<th>נק'</th>
+							<th>עיטור</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  {% for index, user, rank, score, color in ranks %}
+						  <tr>
+							<td>{{ index }}</td>
+							<td>{{ user.nick }}</td>
+							<td>{{ rank.name }}</td>
+							<td class="{{ color }}">{{ score }}</td>
+							{% if rank.badge %}
+							  <td>{{ rank.badge.url }}</td>
+							{% else%}
+							  <td>-</td>
+							{% endif %}
+						  </tr>
+						  {% endfor %}
+						</tbody>
+					  </table>
+					</div>
+				  </div>
+				  </section>
+				  </div>
+				</section>
+			  {% endif %}
 
-          </div>
+		  </div>
 
-        <!-- Footer -->
-          <section id="footer" dir="ltr" align="center">
-            <div class="container">
-              <ul class="copyright">
-                <li>&copy; Beta project. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-              </ul>
-            </div>
-          </section>
+		<!-- Footer -->
+		  <section id="footer" dir="ltr" align="center">
+			<div class="container">
+			  <ul class="copyright">
+				<li>&copy; Beta project. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+			  </ul>
+			</div>
+		  </section>
+	  </div>
 
-      </div>
-
-    <!-- Scripts -->
-      <script src="{% static "assets/js/jquery.min.js" %}"></script>
-      <script src="{% static "assets/js/jquery.scrollex.min.js" %}"></script>
-      <script src="{% static "assets/js/jquery.scrolly.min.js" %}"></script>
-      <script src="{% static "assets/js/browser.min.js" %}"></script>
-      <script src="{% static "assets/js/breakpoints.min.js" %}"></script>
-      <script src="{% static "assets/js/util.js" %}"></script>
-      <script src="{% static "assets/js/main.js" %}"></script>
+	<!-- Scripts -->
+	  <script src="{% static "assets/js/jquery.min.js" %}"></script>
+	  <script src="{% static "assets/js/jquery.scrollex.min.js" %}"></script>
+	  <script src="{% static "assets/js/jquery.scrolly.min.js" %}"></script>
+	  <script src="{% static "assets/js/browser.min.js" %}"></script>
+	  <script src="{% static "assets/js/breakpoints.min.js" %}"></script>
+	  <script src="{% static "assets/js/util.js" %}"></script>
+	  <script src="{% static "assets/js/main.js" %}"></script>
   </body>
 </html>
