@@ -2207,10 +2207,24 @@ input, select, textarea {
 			border-radius: 0;
 		}
 
-			.image.main img {
-				border-radius: 0;
-			}
-
+		.image.main img {
+			border-radius: 0;
+		}
+		div.container-tile > .image {
+			display:inline-flex;
+			flex-grow:1;
+			height: 12vw;
+			position:relative;
+			color: white;
+			object-fit: cover;
+			opacity: 0.7;
+		
+		}
+		
+		div.container-tile > .image > img {
+		flex-grow:1;
+		object-fit: cover;
+		}
 /* List */
 
 	ol {
@@ -3437,4 +3451,25 @@ input, select, textarea {
 
 td {
 	text-align: center;
+}
+
+.hover-over {
+	transition: all 0.2s ease-in-out;
+	font-size: 10px;
+}
+.hide {
+	display: none;
+}
+.hover-over:hover {
+	-ms-transform: scale(1.05);
+	-webkit-transform: scale(1.05);
+	transform: scale(1.05);
+	font-size: 20px;
+	opacity: 1;
+}
+.hover-over:hover .hide {
+	display: block;
+}
+.hover-over:hover p {
+	max-height: 0;
 }
