@@ -1,0 +1,93 @@
+{% load static %}<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>The beta program</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static "assets/css/main.css" %}" />
+  </head>
+  <body class="is-preload">
+
+    <!-- Header -->
+      <section id="header">
+        <header>
+          <span class="image avatar"><img src="{% static "images/avatar.jpg" %}" alt="" /></span>
+          <h1 id="logo"><a href="/#">אתגרי {{ category.name }}</a></h1>
+		  <p>יש {{ amount }} אתגרים, בוא נראה אם אתה תצליח לפתור את כולם...</p>
+        </header> 
+        <footer>
+          <ul class="icons">
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+            <li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+            <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+          </ul>
+        </footer>
+      </section>
+
+    <!-- Wrapper -->
+      <div id="wrapper">
+
+        <!-- Main -->
+          <div id="main">
+              <section id="challenges">
+                <div class="container">
+                  <h3>טבלאת האתגרים</h3>
+                  <section>
+                  <div>
+                    <ul class="feature-icons">
+                      <li class="icon solid fa-user-cog">מנהל הקטגוריה: {{ category.manager }}</li>
+                    </ul>
+                    <div class="table-wrapper">
+                      <table class="alt">
+                        <thead>
+                          <tr>
+                            <th>מס</th>
+                            <th>שם האתגר</th>
+                            <th>תיאור האתגר</th>
+                            <th>נק'</th>
+                            <th>דד-ליין</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for index, chal in challenges %}
+                          <tr>
+                            <td>{{ index }}</td>
+                            <td>{{ chal.name }}</td>
+                            <td>{{ chal.description }}</td>
+                            <td>{{ chal.score }}</td>
+                            <td>{{ chal.deadline }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  </section>
+                </div>
+              </section>
+
+          </div>
+
+        <!-- Footer -->
+          <section id="footer" dir="ltr" align="center">
+            <div class="container">
+              <ul class="copyright">
+                <li>&copy; Beta project. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+              </ul>
+            </div>
+          </section>
+
+      </div>
+
+    <!-- Scripts -->
+      <script src="{% static "assets/js/jquery.min.js" %}"></script>
+      <script src="{% static "assets/js/jquery.scrollex.min.js" %}"></script>
+      <script src="{% static "assets/js/jquery.scrolly.min.js" %}"></script>
+      <script src="{% static "assets/js/browser.min.js" %}"></script>
+      <script src="{% static "assets/js/breakpoints.min.js" %}"></script>
+      <script src="{% static "assets/js/util.js" %}"></script>
+      <script src="{% static "assets/js/main.js" %}"></script>
+  </body>
+</html>

@@ -1,0 +1,188 @@
+{% load static %}<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>House of {{house.name}}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="/house/{{house.name}}.css" />
+  </head>
+  <body class="is-preload">``
+
+    <!-- Header -->
+      <section id="header">
+        <header>
+          <span class="image avatar">
+          {%if house.image %}
+            <img src="{{ house.image.url }}" alt="" /></span>
+          {%else %}
+            <img src="{% static "images/avatar.jpg" %}" alt="" /></span>
+          {%endif %}
+          <h1 id="logo"><a href="/#">House of {{house.name}}</a></h1>
+          <p>{{house.motto}}
+          </p>
+        </header>
+        <nav id="nav">
+          <ul>
+            <li><a href="#whoweare" class="active">דבר וועד הבית</a></li>
+            <li><a href="#info">תחומי עניין</a></li>
+            <li><a href="#players">חברי הבית</a></li>
+            <li><a href="#paths">מסלולים מומלצים</a></li>
+          </ul>
+        </nav>
+        <footer>
+          <ul class="icons">
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+            <li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+            <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+          </ul>
+        </footer>
+      </section>
+
+    <!-- Wrapper -->
+      <div id="wrapper">
+
+        <!-- Main -->
+          <div id="main">
+
+            <!-- ~whoweare -->
+              <section id="whoweare">
+                <div class="image main" data-position="center">
+                  {%if house.banner %}
+                    <img src="{{ house.banner.url }}" alt="" />
+                  {%else %}
+                    <img src="{% static "images/banner.jpg" %}" alt="" />
+                  {%endif %}
+                </div>
+                <div class="container">
+                  <header class="major" dir="ltr">
+                    <h2>House of {{house.name}}</h2>
+                    <p>
+                      "{{house.motto}}"
+                    </p>
+                  </header>
+                  <h4>
+                    פה יש את דבר וועד הבית
+                  </h4>
+                  <p>
+                    עוסקת ביכולת למשוך תשומת לב לבטא, לדוכנים שלה ולפעילויות שלה.</br>
+כוללת בין השאר את קבוצת הקוסמים, שנועדו לשמש אטרקציה של בטא באירועים, לספק אתגר מחשבתי לבטאים, ולשפר את ההבנה של אנשי הסייבר בבטא בנושאי פסיכולוגיה אנושית. ראו:
+<a href = "#">עולם הקוסמים של בטא</a>
+                  </p>
+                </div>
+              </section>
+
+              <!-- houses -->
+              <section id="info">
+                <div class="container">
+                  <h3>
+                    תחומי עניין
+                  </h3>
+                  <div>
+                  <p>
+                    סייבר, בטח, מלא סייבר                    
+                  </p>
+                </div>
+              </section>
+              <!-- code-ninja -->
+              <section id="players">
+                <div class="container">
+                  <h3>
+                    חברי הבית
+                  </h3>
+                  <p>
+                    כן, אלו אנחנו
+                  </p>
+                  <h4>
+                    נינג'ות מובילות
+                  </h4>
+                  <ul class="feature-icons">
+                    <li class="icon solid fa-user">אהוד ההאקר</li>
+                  </ul>
+                  <h4>
+                    כל החבורה
+                  </h4>
+                  <div>
+                    <ul class="feature-icons">
+    #                       <li class="icon solid fa-calendar-alt">סטטוס: ספטמבר 2019</li>
+                    </ul>
+                    <div class="table-wrapper">
+                      <table class="alt">
+                        <thead>
+                          <tr>
+                            <th>מס</th>
+                            <th>משתתף</th>
+                            <th>דרגה</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for index, player in players %}
+                          <tr>
+                            <td>{{ index }}</td>
+                            <td>{{ player.nick }}</td>
+                            <td class="{{ player.rank.color }}">{{ player.rank.level }}</td>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <h4>
+                </div>
+              </section>
+
+            <!-- Three -->
+              <section id="paths">
+                <div class="container">
+                  <h3>מסלולים מומלצים</h3>
+                  <p>קצת על מה חברי הבית עשו, שווה ללמוד מהם</p>
+                  <div class="features" align="center">
+                    <article>
+                      <a href="#" class="image"><img src="{% static "images/pic01.jpg" %}" object-fit="cover" width="100%" /></a>
+                      <div class="inner">
+                        <h4>הדרך של אהוד</h4>
+                        <p>Integer eu ante ornare amet commetus vestibulum blandit integer in curae ac faucibus integer adipiscing ornare amet.</p>
+                      </div>
+                    </article>
+                    <article>
+                      <a href="#" class="image"><img src="{% static "images/pic02.jpg" %}" alt="" /></a>
+                      <div class="inner">
+                        <h4>הדרך של שלמה</h4>
+                        <p>Integer eu ante ornare amet commetus vestibulum blandit integer in curae ac faucibus integer adipiscing ornare amet.</p>
+                      </div>
+                    </article>
+                    <article>
+                      <a href="#" class="image"><img src="{% static "images/pic03.jpg" %}" alt="" /></a>
+                      <div class="inner">
+                        <h4>הדרך של סינדרה</h4>
+                        <p>Integer eu ante ornare amet commetus vestibulum blandit integer in curae ac faucibus integer adipiscing ornare amet.</p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </section>
+          </div>
+
+        <!-- Footer -->
+          <section id="footer" dir="ltr" align="center">
+            <div class="container">
+              <ul class="copyright">
+                <li>&copy; Beta project. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+              </ul>
+            </div>
+          </section>
+
+      </div>
+
+    <!-- Scripts -->
+      <script src="{% static "assets/js/jquery.min.js" %}"></script>
+      <script src="{% static "assets/js/jquery.scrollex.min.js" %}"></script>
+      <script src="{% static "assets/js/jquery.scrolly.min.js" %}"></script>
+      <script src="{% static "assets/js/browser.min.js" %}"></script>
+      <script src="{% static "assets/js/breakpoints.min.js" %}"></script>
+      <script src="{% static "assets/js/util.js" %}"></script>
+      <script src="{% static "assets/js/main.js" %}"></script>
+  </body>
+</html>

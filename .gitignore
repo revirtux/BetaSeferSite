@@ -130,3 +130,5 @@ dmypy.json
 #Ignore Python virtual environments
 Scripts/
 pyvenv.cfg
+# pycharm
+.idea/
