@@ -42,6 +42,18 @@ def index(request):
             'categories': categories
         }, request))
 
+def profile(request, usernick):
+    template = loader.get_template('profile.html')
+    user = usersmanger.get_user_by_nick(usernick)
+    level = usersmanger.dox_user(user).rank.level
+    houses = user.houses.all()
+    return HttpResponse(template.render(
+        {
+            'user': user,
+            'houses': houses,
+            'level': level
+        }, request))
+
 
 def house_path(request, house_name):
     template = loader.get_template('house.html')
