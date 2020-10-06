@@ -20,6 +20,10 @@ def update_category(name: str, description: str = "", manager: str = ""):
 def get_all_categories():
     return Category.objects.all()
 
+def get_category_object(name: str=""):
+    results = Category.objects.filter(name=name)
+    return None if len(results) == 0 else results[0]
+
 def get_all_challenges(category_name: str):
     return Challenge.objects.filter(category__name=category_name)
 

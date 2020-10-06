@@ -19,7 +19,15 @@
 		<nav id="nav">
           <ul>
             <li><a href="#challenges">רשימת האתגרים</a></li>
-            <li><a href="#game">משחק {{ category.game.name }}</a></li>
+            <li><a href="#game">משחק {{ category.game.name }}</a></li> </br>
+			<li><a href="/">חזור לעמוד הראשי</a></li>
+          </ul>
+        </nav>
+		{% else %}
+		<nav id="nav">
+          <ul>
+            <li><a href="#challenges">רשימת האתגרים</a></li> </br>
+            <li><a href="/">חזור לעמוד הראשי</a></li>
           </ul>
         </nav>
 		{% endif %}
@@ -102,9 +110,11 @@
 				  <section>
 				  <div>
 					<ul class="feature-icons">
+					{% if game_managers %}
 					  <li class="icon solid fa-user-cog">מנהל/י הקטגוריה: 
 					  {% for manager in game_managers %} </br> {{ manager }} {% endfor %}
 					  </li>
+					{% endif%}
 					</ul>
 					<ul class="feature-icons">
 					  <li class="icon solid fa-plus" style="width: 100%">{{ category.game.getting_points_desc }}</li>
@@ -124,14 +134,14 @@
 						  </tr>
 						</thead>
 						<tbody>
-						  {% for index, user, rank, score, color in ranks %}
+						  {% for index, user in game_table %}
 						  <tr>
 							<td>{{ index }}</td>
 							<td>{{ user.nick }}</td>
-							<td>{{ rank.name }}</td>
-							<td class="{{ color }}">{{ score }}</td>
-							{% if rank.badge %}
-							  <td>{{ rank.badge.url }}</td>
+							<td>{{ user.ranks.0.name }}</td>
+							<td>{{ user.total }}</td>
+							{% if user.ranks.0.badge %}
+							  <td><img src="{{ user.ranks.0.badge.url }}" alt="" style="width: 50; height: 50;" /></td>
 							{% else%}
 							  <td>-</td>
 							{% endif %}

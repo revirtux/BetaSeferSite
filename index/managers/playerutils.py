@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from ..models.games import GameRank
+from typing import List
 from django.db.models import ImageField
 
 
@@ -25,6 +27,7 @@ class Player:
     houses: list
     total: int
     image: ImageField
+    ranks: List[GameRank]
 
 
 def get_rank(score, score_ninjafy=True):
