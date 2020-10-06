@@ -1,8 +1,8 @@
 from ..models.games import Game, GameRank
 from ..models.users import User, USER_STATES
 from ..models.categories import Category
-from .usersmanger import get_score_table, get_category_scores
 from .playerutils import Player, get_rank
+from .categoriesmanager import get_category_scores
 from ..models.solutions import Solution
 
 def get_game_table(game: Game):
@@ -34,7 +34,14 @@ def get_game_table(game: Game):
 
 
 def get_badges(game: Game):
-    pass
+    table = get_game_table(game)
+    d = dict()
+
+    for player in table:
+        if player.ranks[0].badge:
+            d[player.nick] = d.get(player.nick, []) + [player.ranks[0]]
+    
+    return d
 
 def get_managers(game: Game):
     return game.managers.all()

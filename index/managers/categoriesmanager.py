@@ -1,6 +1,7 @@
 from ..models.users import User
 from ..models.categories import Category
 from ..models.challenges import Challenge
+from ..models.solutions import Solution
 
 
 def update_category(name: str, description: str = "", manager: str = ""):
@@ -32,3 +33,12 @@ def get_game(category: Category):
         return category.game
     except:
         return None
+
+def get_category_scores(category: Category):
+    solutions = Solution.objects.filter(challenge__category=category).select_related("user").select_related("challenge")
+    d = dict()
+
+    for sol in solutions:
+        d[sol.user] = d.get(sol.user, 0) + sol.get_score()
+    
+    return d

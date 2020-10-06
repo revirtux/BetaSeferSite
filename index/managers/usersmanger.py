@@ -5,8 +5,10 @@ from ..models.users import User, USER_STATES
 from ..models.solutions import Solution
 from ..models.houses import House
 from ..models.categories import Category
+from ..models.games import Game
 from .playerutils import Subject, Player, get_rank
 from .housesmanager import get_houses_name, get_all_houses
+from .gamesmanager import get_badges
 from .categoriesmanager import get_all_categories, get_category_object
 from django.db.models.query import prefetch_related_objects
 
@@ -36,16 +38,6 @@ def get_score_table(state: str = "", house: str = ""):
     
     return d
 
-def get_category_scores(category: Category):
-    solutions = Solution.objects.filter(challenge__category=category).select_related("user").select_related("challenge")
-    d = dict()
-
-    for sol in solutions:
-        d[sol.user] = d.get(sol.user, 0) + sol.get_score()
-    
-    return d
-    
-
 def new_get_top_three(scores: dict) -> list:
     return [Subject(name, score) for name, score in (
             Counter(scores).most_common(3) + [('Null', 0)] * 3)]
@@ -55,6 +47,12 @@ def get_main_table(state: str = "", house: str = ""):
 
     score_table = get_score_table(state, house)
     users = []
+    badges = dict()
+
+    for game in Game.objects.all():
+        game_badges = get_badges(game)
+        for user in game_badges:
+            badges[user] = badges.get(user, []) + game_badges[user]
 
     for player in players:
         if player not in score_table:
@@ -72,8 +70,9 @@ def get_main_table(state: str = "", house: str = ""):
             player.houses.all(),
             total,
             player.image,
-            []
+            badges.get(player.nick, [])
         ))
+
     return sorted(users, key=lambda p: p.total, reverse=True)
 
 """ Deprecated by hexer
