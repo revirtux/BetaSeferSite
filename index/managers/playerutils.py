@@ -25,6 +25,7 @@ class Player:
     houses: list
     total: int
     image: ImageField
+    state: str
 
 
 def get_rank(score):
@@ -43,4 +44,4 @@ def get_rank(score):
     elif score <= 19:
         return Rank(str(score), 'brown')
     else:
-        return Rank('ninja', 'ninja')
+        return Rank('ninja', 'black')

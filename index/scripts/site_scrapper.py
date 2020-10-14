@@ -31,7 +31,7 @@ USELESS_TABLE_1 = 17
 USELESS_TABLE_2 = 19
 MAIN_PAGE_URL = "https://beta.wikiversity.org/wiki/%D7%9C%D7%99%D7%9E%D7%95%D7%93%" \
     "D7%99_%D7%9E%D7%97%D7%A9%D7%91%D7%99%D7%9D_%D7%91%D7%A9%D7%99%D7%98%D7%AA_%D7%91%D7%98%D7%90"
-
+    
 
 @dataclass
 class UsersTable:
@@ -40,26 +40,50 @@ class UsersTable:
     ninja: bool = False
 
 
-def soup_site(url):
-    r = requests.get(url)
+class Scrapper:
+    def __init__(self, url):
+        self.url = url
+        self.r = requests.get(self.url)
+        self.soup = BeautifulSoup(self.r.text, 'html.parser')
 
-    return BeautifulSoup(r.text, 'html.parser')
+    def soup_all_tables(self):
+        tables = self.soup.find_all('table')
+
+        return tables
 
 
-def write_content(path: str, content):
-    """Writes the content of the found users and solved challenges to a file.
-    :param path: where the file will be save.
-    :type path: str
-    :param content: the cotent to be written into the file.
-    """
-    while True:
-        try:
-            with codecs.open(path, 'w', encoding='utf-8') as file:
-                json.dump(content, file, ensure_ascii=False)
+    def soup_main_tables(self):
+        main_tables = self.soup.find_all('table', class_="wikitable sortable")
 
-                break
-        except IOError:
-            mkdir(path[:path.index('\\')])
+        return main_tables
+
+
+    def soup_challenges_tables(self):
+        challenges_tables = self.soup.find_all('table', class_="wikitable")
+
+        return challenges_tables
+    
+
+    def soup_headers(self):
+        headers = self.soup.find_all('h3')
+
+        return headers
+
+class Challenges(Scrapper):
+    def __init__(self):
+        super().__init__(MAIN_PAGE_URL)
+    
+
+    def get_challenges_tables(self):
+        challenges_tables = self.soup_challenges_tables()
+
+        return challenges_tables
+
+
+    def get_challenges_names(self):
+        challenges_names = import_challenges_table_name(self.soup)
+
+        return challenges_names
 
 
 def download_image(content, title):
@@ -77,6 +101,8 @@ def users_tables_organize(tables):
     """connect to all the function that collects data about users and organize the data.
     :param tables: all of the tables in the page.
     :type tables: bs4 element.
+    :return: list of all the users in each category.
+    :rtype: list[dataclass(str, list, bool)].
     """
     users_categories = [UsersTable('player', ninja=True),
                         UsersTable('player'),
@@ -130,6 +156,8 @@ def games_tables_organize(tables):
     """connect to all of the functions that collects data about the games and organize the data.
     :param tables: all of the tables in the page.
     :type tables: bs4 element
+    :return: list of dictionaries with all the games titles and ranks.
+    :rtype: list[dict{str, list(str)}].
     """
     games = [{'name': 'samorai_c', 'ranks': []},
              {'name': 'python_slayer', 'ranks': []},
@@ -148,7 +176,7 @@ def import_games(table) -> list:
     :param table: the context to be analyzed.
     :type table: bs4 element
     :return: game table with the name of it and first 3 ranks.
-    :rtype: list
+    :rtype: list[dict{str, byte}]
     """
     ranks = list()
 
@@ -168,6 +196,14 @@ def import_games(table) -> list:
 
 
 def import_challenges_organize(tables, challenges: list):
+    """Connect to all of the functions that collects data about the challenges and organize the data.
+    :param tables: all of the tables in the page.
+    :type tables: bs4 element.
+    :param challenges: list of all the challenges.
+    :type list: list
+    :return: list of all the challenges.
+    :rtype: list
+    """
     for table in range(TABLE_OFFSET, LAST_CHALLENGES_TABLE):
         if table != USELESS_TABLE_1 and table != USELESS_TABLE_2:
             challenges[table - TABLE_OFFSET - (table > USELESS_TABLE_1) - (
@@ -205,7 +241,7 @@ def import_challenges(table) -> list:
     :param table: each table is a new category.
     :type table: bs4 element
     :return: list of the challenges of each category
-    :rtype: list
+    :rtype: list[dict{str: int, str: str}]
     """
     challenges = list()
 
@@ -214,7 +250,7 @@ def import_challenges(table) -> list:
 
         dl = dl.text.replace('\n', '')
 
-        if dl == '':
+        if not dl:
             dl = '-'
 
         challenges.append(dict({'challenge_name': challenge_name.text.replace('\n', ''),
@@ -232,19 +268,19 @@ def solved_challenges_table_organize():
     solved_challenges = list()
     second_page_url = 'https://beta.wikiversity.org/wiki/User:The_duke/solved_beta_challenges'
 
-    soup = soup_site(second_page_url)
-    tables = soup.find_all('table')
-    heads = soup.find_all('h3')
+    site_scrapper = Scrapper(second_page_url)
+    tables = site_scrapper.soup_all_tables()
+    heads = site_scrapper.soup_headers()
 
     table_names = [table_name.text.replace(
         '[edit]', '').replace(u'אתגרי ', "") for table_name in heads if '[edit]' in table_name.text][:-NON_TECH_TABLES]
 
-    for table_name in range(len(table_names) - NON_TECH_TABLES):
+    for table_name in range(len(table_names)):
+        print(table_names[table_name])
         challenges_and_solvers = import_solved_challenges(tables[table_name])
 
-        table_names[table_name] = " ".join(table_names[table_name].split()[::-1])
-        solved_challenges.append(
-            {'subject': table_names[table_name], 'challenges': challenges_and_solvers})
+        table_names[table_name] = " ".join(table_names[table_name].split())
+        solved_challenges.append({'subject': table_names[table_name], 'challenges': challenges_and_solvers})
 
     return solved_challenges[:-1]
 
@@ -308,35 +344,8 @@ def limbo_projects(main_projects_in_limbo_table):
     return projects
 
 
-def soup_main_tables(soup):
-    main_tables = soup.find_all('table', class_="wikitable sortable")
-
-    return main_tables
-
-
-def soup_challenges_tables(soup):
-    challenges_tables = soup.find_all('table', class_="wikitable")
-
-    return challenges_tables
-
-
 def get_main_tables():
-    site_scrapper = soup_site(MAIN_PAGE_URL)
-    main_tables = soup_main_tables(site_scrapper)
+    site_scrapper = Scrapper(MAIN_PAGE_URL)
+    main_tables = site_scrapper.soup_main_tables()
 
     return main_tables
-
-
-def get_challenges_tables():
-    site_scrapper = soup_site(MAIN_PAGE_URL)
-    challenges_tables = soup_challenges_tables(site_scrapper)
-
-    return challenges_tables
-
-
-def get_challenges_names():
-    site_scrapper = soup_site(MAIN_PAGE_URL)
-
-    challenges_names = import_challenges_table_name(site_scrapper)
-
-    return challenges_names

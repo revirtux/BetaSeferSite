@@ -29,7 +29,9 @@ def get_all_players(state: str = "", house: str = "") -> list:
         players.append(dox_user(user))
     return sorted(players, key=lambda p: p.total, reverse=True)
 
-
+def get_state_full_name(state: chr):
+    return [item[0] for item in USER_STATES.items() if item[1] == state][0]
+    
 def dox_user(user: User) -> Player:
     total, subjects = get_top_three(Solution.objects.filter(user=user))
     return Player(
@@ -41,7 +43,8 @@ def dox_user(user: User) -> Player:
         subjects[2],
         user.houses.all(),
         total,
-        user.image
+        user.image,
+        get_state_full_name(user.state)
     )
 
 

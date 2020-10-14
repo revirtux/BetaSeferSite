@@ -42,17 +42,33 @@ def index(request):
             'categories': categories
         }, request))
 
+
 def profile(request, usernick):
     template = loader.get_template('profile.html')
     user = usersmanger.get_user_by_nick(usernick)
-    level = usersmanger.dox_user(user).rank.level
-    houses = user.houses.all()
-    return HttpResponse(template.render(
-        {
-            'user': user,
-            'houses': houses,
-            'level': level
-        }, request))
+    player = usersmanger.dox_user(user)
+    categories_list = categoriesmanager.get_all_categories()#.filter(name=player.first.name)
+    
+    waba_laba_dubdub = {
+            'player': player.nick,
+            'level': player.rank.level,
+            'belt': player.rank.color,
+            'state': player.state,
+            'houses': player.houses,
+            'categories' : categories_list
+            }
+    
+    if player.first.name != 'Null':
+        waba_laba_dubdub['first'] = categories_list.filter(name=player.first.name)[0]
+        waba_laba_dubdub['first_score'] = player.first.score
+    if player.sec1.name != 'Null':
+        waba_laba_dubdub['sec1'] = categories_list.filter(name=player.sec1.name)[0]
+        waba_laba_dubdub['sec1_score'] = player.sec1.score
+    if player.sec2.name != 'Null':
+        waba_laba_dubdub['sec2'] = categories_list.filter(name=player.sec2.name)[0]
+        waba_laba_dubdub['sec2_score'] = player.sec2.score
+
+    return HttpResponse(template.render(waba_laba_dubdub, request))
 
 
 def house_path(request, house_name):

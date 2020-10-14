@@ -3444,11 +3444,16 @@ input, select, textarea {
 
 .house-sym {
 	text-align: center;
-	margin-top: -1.75em;
 	margin-bottom: 0.5em;
+	display: flex;
+	justify-content: center;
 }
 
 .house-sym > img:not(first-child) {
+	margin-right: 1%;
+}
+
+.house-sym > figure:not(first-child) {
 	margin-right: 1%;
 }
 

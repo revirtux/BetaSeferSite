@@ -4,25 +4,63 @@ Import tables from the old sites
 ----------------------------------------------------------------
 Exceptions:
 ----------------------------------------------------------------
-*   row 55: Manually add "it4n" to DB - not found in code ninja
-    setted as testing user.
-
-
+*   row 26: users are not exist, it4n added to db.
+*   row 29: removed CripyIce from משחק הדינוזאור של hexer challenge
+    since it has been problematic
+*   row 0: removed 'crackme שימושי כלשהו לצוות רוורסינג' challenge from
+    Reversing & Pwning category since it appeard twice (also in C catogory)
 """
 from .site_scrapper import users_tables_organize, get_main_tables, solved_challenges_table_organize
-from .site_scrapper import import_challenges_organize, get_challenges_tables, get_challenges_names
+from .site_scrapper import import_challenges_organize, Scrapper, Challenges
 from ..managers.usersmanger import update_user
 from ..managers.solutionsmanager import update_solution
 from ..managers.challengesmanager import update_challenge
 from ..managers.categoriesmanager import update_category
 
+TWENTY = 20
+THIRTY = 30
+FORTY = 40
+
 MULTYPOINT_CHALLENGES = (
     u"crackme שימושי כלשהו לצוות רוורסינג",
-    "Codingbat Python"
+    "Codingbat Python",
+    "Codingbat Java",
+    u"משחק Bandit בOverTheWire.org",
+    "gracker.org",
+    u"אתגרי משחק Narnia בoverthewire.org "
+)
+
+SECURITY_CHALLENGES = {
+    "hackthissite.org": TWENTY
+}
+
+NONEXISTENT_USERS = (
+    "shot4shot",
+    "CripyIce",
+    "It4n"
+)
+
+MULTYPOINT_FUNCTIONS = (
+    "codewars",
+    "Extreme trainer"
 )
 
 
-# update_user(nick: str, state: str, houses: list = [], note: str = "")
+class MultypointChall:
+    def __init__(self, data, challenge_name, category):
+        self.data = data
+        self.challenge_name = challenge_name
+        self.category = category
+
+    def parse(self):
+        self.name, self.points = self.data.replace(')', '').split(
+            " ")[0], self.data.replace(')', '').split(" ")[-1]
+
+    def update_db(self):
+        update_solution(self.name, self.challenge_name,
+                        self.category, self.points)
+
+
 def import_users():
     main_tables = get_main_tables()
     users_categories = users_tables_organize(main_tables)
@@ -36,11 +74,10 @@ def import_users():
                             user['houses'], user['remarks'])
 
 
-# update_challenge(name: str, category: str, description: str = "", score: int = 1)
-# update_category(name: str, description: str = "", manager: str = "")
 def import_challenges():
-    challenges_tables = get_challenges_tables()
-    challenges_name = get_challenges_names()
+    challenges_data = Challenges()
+    challenges_tables = challenges_data.get_challenges_tables()
+    challenges_name = challenges_data.get_challenges_names()
 
     all_challenges = import_challenges_organize(
         challenges_tables, challenges_name)
@@ -51,30 +88,59 @@ def import_challenges():
         for challenge in category['challenges']:
             if challenge['challenge_name'].lower() == "codewars":      # here I ignored codewars
                 continue
+            elif 'codingbat' in challenge['challenge_name'].lower():
+                update_challenge(challenge['challenge_name'],
+                                 category['table_name'],
+                                 challenge['description'],
+                                 0,
+                                 challenge['deadline'])
+            else:
+                update_challenge(challenge['challenge_name'],
+                                 category['table_name'],
+                                 challenge['description'],
+                                 float(challenge['points']),
+                                 challenge['deadline'])
 
-            update_challenge(challenge['challenge_name'],
-                             category['table_name'],
-                             challenge['description'],
-                             int(challenge['points']),
-                             challenge['deadline'])
 
-
-# update_solution(user: str, challenge: str, category: str, multipoint: int = 1):
 def import_solutions():
     all_solved_challenges = solved_challenges_table_organize()
 
     for category in all_solved_challenges:
         for challenge in category['challenges']:
             for solver in challenge['solvers']:
-                if challenge['challenge_name'] == "codewars":
-                    update_codewars(solver, category['subject'])
+                if solver in NONEXISTENT_USERS:
                     continue
-                elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES:
+                if challenge['challenge_name'] in MULTYPOINT_FUNCTIONS:
+                    exec_multypoints_functions(
+                        solver, challenge['challenge_name'], category['subject'])
+                elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES or challenge['challenge_name'] in SECURITY_CHALLENGES:
                     update_multipoint(
                         solver, challenge['challenge_name'], category['subject'])
+                elif challenge['challenge_name'] == "Extreme trainer":
+                    update_extreme_trainer(solver, category['subject'])
                 else:
                     update_solution(
-                        solver, challenge['challenge_name'], category['subject'])
+                        solver.replace(" ", ""), challenge['challenge_name'], category['subject'])
+
+
+def update_multipoint(data, challenge_name, category):
+    chall = MultypointChall(data, challenge_name, category)
+    chall.parse()
+
+    if challenge_name in SECURITY_CHALLENGES:
+        security_points_convert(chall)
+
+    chall.update_db()
+
+
+def security_points_convert(chall):
+    chall.points = int(chall.points) // SECURITY_CHALLENGES[chall.challenge_name]
+
+
+def exec_multypoints_functions(data, challenge_name, category):
+    challenge_name = "update_" + "_".join(challenge_name.lower().split())
+
+    globals()[challenge_name](data, category)
 
 
 def update_codewars(data, category):
@@ -97,11 +163,17 @@ def update_codewars(data, category):
                         multipoint=points)
 
 
-def update_multipoint(data, challenge_name, category):
-    name, points = data.replace(')', '').split(
-        " ")[0], data.replace(')', '').split(" ")[-1]
+def update_extreme_trainer(data, category):
+    data = data.replace(')', "", 2).replace('(', ')').split(')')
 
-    update_solution(name, challenge_name, category, points)
+    names = data[0].split(", ")
+    points = int(data[1][-1])
+
+    for name in names:
+        update_solution(name.replace(" ", ""),
+                        "Extreme trainer",
+                        category,
+                        points)
 
 
 def update_from_old_site():
