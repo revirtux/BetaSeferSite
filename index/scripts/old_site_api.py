@@ -4,26 +4,104 @@ Import tables from the old sites
 ----------------------------------------------------------------
 Exceptions:
 ----------------------------------------------------------------
-*   row 55: Manually add "it4n" to DB - not found in code ninja
-    setted as testing user.
-
-
+*   row 26: users are not exist, it4n added to db.
+*   row 29: removed CripyIce from משחק הדינוזאור של hexer challenge
+    since it has been problematic
+*   row 0: removed 'crackme שימושי כלשהו לצוות רוורסינג' challenge from
+    Reversing & Pwning category since it appeard twice (also in C catogory)
+*   row 129: challenges doesn't exist in the challenges table
 """
+
 from .site_scrapper import users_tables_organize, get_main_tables, solved_challenges_table_organize
-from .site_scrapper import import_challenges_organize, get_challenges_tables, get_challenges_names
+from .site_scrapper import import_challenges_organize, Scrapper, Challenges
 from ..managers.usersmanger import update_user
 from ..managers.solutionsmanager import update_solution
 from ..managers.challengesmanager import update_challenge
 from ..managers.categoriesmanager import update_category
 
+TWENTY = 20
+THIRTY = 30
+FORTY = 40
+SEVENTY_FIVE = 75
+
 MULTYPOINT_CHALLENGES = (
     u"crackme שימושי כלשהו לצוות רוורסינג",
-    "Codingbat Python"
+    "Codingbat Python",
+    "Codingbat Java",
+    u"משחק Bandit בOverTheWire.org",
+    "gracker.org",
+    u"אתגרי משחק Narnia בoverthewire.org",
+    u"משחק הXSS של גוגל",
+    u"אתגרי הXSS של escape.alf.nu",
+    "yamagata's XSS challenges"
+)
+
+SECURITY_CHALLENGES = {
+    "hackthissite.org": TWENTY,
+    "IceCTF 2016": TWENTY,
+    "hackthis.co.uk": FORTY,
+    "hellboundhackers.org": THIRTY,
+    "ksnctf": FORTY, 
+    "RedTiger Hackit": SEVENTY_FIVE,
+    "tdhack.com challenge: Net 1 - Amateur job": None,
+    "OWASP rhcloud CTF, web challenge 1": None,
+    "OWASP rhcloud CTF, web challenge 2": None,
+    "OWASP rhcloud CTF, web challenge 3": None,
+    "tdhack.com challenge: Net 2 - Safe Java": None,
+    "tdhack.com challenge: Net 3 - Once again, I forgot": None,
+    "tdhack.com challenge: Net 4 - Few points": None,
+    "tdhack.com challenge: Net 5 - Password reminder": None,
+    # informatics challenges, built similiar to the sec challenges.
+    u"תרגום מאמר של 80-250 מילים בויקיפדיה": None,
+    u"תרגום מאמר של 250 מילים ומעלה בויקיפדיה": None
+}
+
+NONEXISTENT_USERS = (
+    "shot4shot",
+    "cripyice",
+    "cuphead"
+)
+
+NONEXISTENT_CHALLENGES = (
+    "thisislegal.org",
+    u"שמירת קובץ של משחק מחשב",
+    u"כתיבה במשחק",
+    u"""בגרות קיץ תשע"ד 035005, 4 יח"ל השלמה, שאלה 3"""
+)
+MULTYPOINT_FUNCTIONS = (
+    "codewars",
+    "Extreme trainer"
 )
 
 
-# update_user(nick: str, state: str, houses: list = [], note: str = "")
+class MultypointChall:
+    """helps scrape challenges with multi ponits"""
+    def __init__(self, data, challenge_name, category):
+        """gets challenge name and its category.
+        :param data: the data to be analyzed.
+        :type data: str.
+        :param challenge_name: the name of the challenge.
+        :type challenge_name: str.
+        :param category: the name of the category the challenge is associated with.
+        :type category: str.
+        """
+        self.data = data
+        self.challenge_name = challenge_name
+        self.category = category
+
+    def parse(self):
+        """parses the given data string to name and points."""
+        self.name, self.points = self.data.replace(')', '').split(
+            " ")[0], self.data.replace(')', '').split(" ")[-1]
+
+    def update_db(self):
+        """updates solution on the database."""
+        update_solution(self.name, self.challenge_name,
+                        self.category, self.points)
+
+
 def import_users():
+    """imports all the users in page"""
     main_tables = get_main_tables()
     users_categories = users_tables_organize(main_tables)
 
@@ -36,11 +114,11 @@ def import_users():
                             user['houses'], user['remarks'])
 
 
-# update_challenge(name: str, category: str, description: str = "", score: int = 1)
-# update_category(name: str, description: str = "", manager: str = "")
 def import_challenges():
-    challenges_tables = get_challenges_tables()
-    challenges_name = get_challenges_names()
+    """imports all the users in page"""
+    challenges_data = Challenges()
+    challenges_tables = challenges_data.get_challenges_tables()
+    challenges_name = challenges_data.get_challenges_names()
 
     all_challenges = import_challenges_organize(
         challenges_tables, challenges_name)
@@ -51,33 +129,96 @@ def import_challenges():
         for challenge in category['challenges']:
             if challenge['challenge_name'].lower() == "codewars":      # here I ignored codewars
                 continue
+            elif 'codingbat' in challenge['challenge_name'].lower():
+                update_challenge(challenge['challenge_name'],
+                                 category['table_name'],
+                                 challenge['description'],
+                                 0,
+                                 challenge['deadline'])
+            else:
+                update_challenge(challenge['challenge_name'],
+                                 category['table_name'],
+                                 challenge['description'],
+                                 int(float(challenge['points']) + 0.5),
+                                 challenge['deadline'])
 
-            update_challenge(challenge['challenge_name'],
-                             category['table_name'],
-                             challenge['description'],
-                             int(challenge['points']),
-                             challenge['deadline'])
 
-
-# update_solution(user: str, challenge: str, category: str, multipoint: int = 1):
 def import_solutions():
+    """import all of the solved challenges from the 2nd page"""
     all_solved_challenges = solved_challenges_table_organize()
 
     for category in all_solved_challenges:
         for challenge in category['challenges']:
-            for solver in challenge['solvers']:
-                if challenge['challenge_name'] == "codewars":
-                    update_codewars(solver, category['subject'])
+            if challenge['challenge_name'] in NONEXISTENT_CHALLENGES:
                     continue
-                elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES:
+            for solver in challenge['solvers']:
+                if not username_validate(solver.replace(" ", "")):
+                    continue
+                if challenge['challenge_name'] in MULTYPOINT_FUNCTIONS:
+                    exec_multypoints_functions(
+                        solver, challenge['challenge_name'], category['subject'])
+                elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES or challenge['challenge_name'] in SECURITY_CHALLENGES:
                     update_multipoint(
                         solver, challenge['challenge_name'], category['subject'])
+                elif challenge['challenge_name'] == "Extreme trainer":
+                    update_extreme_trainer(solver, category['subject'])
                 else:
                     update_solution(
-                        solver, challenge['challenge_name'], category['subject'])
+                        solver.replace(" ", ""), challenge['challenge_name'], category['subject'])
+
+
+def update_multipoint(data: str, challenge_name: str, category: str):
+    """scrapes multipoints challenges that aren't one-time-solve.
+    :param data: the data of the solver to be analyzed.
+    :type data: str.
+    :param challenge_name: name of the challenge.
+    :type challenge_name: str.
+    :param category: the name of the category associated with the challenge.
+    :type category: str.
+    """
+    chall = MultypointChall(data, challenge_name, category)
+    chall.parse()
+
+    if not username_validate(chall.name):
+        return
+    
+    if challenge_name in SECURITY_CHALLENGES:
+        security_points_convert(chall)
+
+    chall.update_db()
+
+
+def security_points_convert(chall):
+    """scrapes security challenges.
+    :param chall: the challenge to analyze.
+    :type chall: str.
+    """
+    try:
+        chall.points = int(chall.points) // SECURITY_CHALLENGES[chall.challenge_name]
+        chall.points = int(chall.points + 0.5)
+    except ValueError:
+        chall.points = 1
+
+        
+def exec_multypoints_functions(data, challenge_name, category):
+    """Executes the multi-point functions.
+    :param data: the data of the solver to be analyzed.
+    :type data: str.
+    :param challenge_name: the name of the challenge to be analyzed.
+    :type challenge_name: str.
+    :param category: the name of the category the challenges is in.
+    :type category: str.
+    """
+    challenge_name = "update_" + "_".join(challenge_name.lower().split())
+
+    globals()[challenge_name](data, category)
 
 
 def update_codewars(data, category):
+    """updates the codewars challenge.
+    :param data: the solvers data.
+    :param category: the category the challenge is in.
+    """
     solver_data = data.replace(")", "(").split("(")
 
     name = solver_data[0]
@@ -97,14 +238,37 @@ def update_codewars(data, category):
                         multipoint=points)
 
 
-def update_multipoint(data, challenge_name, category):
-    name, points = data.replace(')', '').split(
-        " ")[0], data.replace(')', '').split(" ")[-1]
+def update_extreme_trainer(data, category):
+    """updates the extreme trainer trainer challenge.
+    :param data: the data of the solvers to be analyzed.
+    :type data: str.
+    :param category: the category the challenge is in.
+    :type category: str.
+    """
+    data = data.replace(')', "", 2).replace('(', ')').split(')')
 
-    update_solution(name, challenge_name, category, points)
+    names = data[0].split(", ")
+    points = int(data[1][-1])
+
+    for name in names:
+        update_solution(name.replace(" ", ""),
+                        "Extreme trainer",
+                        category,
+                        points)
+
+
+def username_validate(name):
+    """checks if username if valid.
+    :param name: the name to validate.
+    :type name: str.
+    """
+    if name.lower() in NONEXISTENT_USERS:
+        return 0
+    return 1
 
 
 def update_from_old_site():
+    """updates the new site from the old site"""
     import_users()
     import_challenges()
     import_solutions()
