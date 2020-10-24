@@ -395,8 +395,11 @@
                           {%else %}
                             <img src="{% static "images/pic01.jpg" %}" alt="" />
                           {%endif %}
-                            <a href="#" class="text">
+                            <a href="#" class="tile-text">
                               <h2>{{ category.name }}</h2>
+                              {% if category.description %}
+                                <p class="hide">{{ category.description }}</p>
+                              {% endif %}
                             </a>
                           </span>
                         </div>
