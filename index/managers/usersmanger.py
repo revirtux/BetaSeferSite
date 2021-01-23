@@ -96,26 +96,6 @@ def get_main_table(state: str = "", house: str = ""):
 
     return sorted(users, key=lambda p: p.total, reverse=True)
 
-""" Deprecated by hexer
-def get_all_players(state: str = "", house: str = "") -> list:
-    if state and state not in USER_STATES:
-        return []
-
-    if house and house not in get_houses_name():
-        return []
-    
-    users = User.objects.all()
-    if state:
-        users = users.filter(state=USER_STATES[state])
-    
-    if house:
-        users = users.filter(houses__name=house)
-    
-    players = []
-    for user in users:
-        players.append(dox_user(user))
-    return sorted(players, key=lambda p: p.total, reverse=True)
-"""
 
 def dox_user(user: User) -> Player:
     """
