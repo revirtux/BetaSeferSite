@@ -86,4 +86,4 @@ def challenges_path(request, category_name):
                 'game_managers': game.managers.all() if game else []
             }, request))
     else:
-        return HttpResponse(Http404("<p>No such category</p>"))
+        return HttpResponse("<p>No such category</p>", status=404)
