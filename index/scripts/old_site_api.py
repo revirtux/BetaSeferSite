@@ -41,7 +41,7 @@ SECURITY_CHALLENGES = {
     "IceCTF 2016": TWENTY,
     "hackthis.co.uk": FORTY,
     "hellboundhackers.org": THIRTY,
-    "ksnctf": FORTY, 
+    "ksnctf": FORTY,
     "RedTiger Hackit": SEVENTY_FIVE,
     "tdhack.com challenge: Net 1 - Amateur job": None,
     "OWASP rhcloud CTF, web challenge 1": None,
@@ -51,7 +51,7 @@ SECURITY_CHALLENGES = {
     "tdhack.com challenge: Net 3 - Once again, I forgot": None,
     "tdhack.com challenge: Net 4 - Few points": None,
     "tdhack.com challenge: Net 5 - Password reminder": None,
-    # informatics challenges, built similiar to the sec challenges.
+    # informatics challenges, built similiar to the security challenges.
     u"תרגום מאמר של 80-250 מילים בויקיפדיה": None,
     u"תרגום מאמר של 250 מילים ומעלה בויקיפדיה": None
 }
@@ -70,12 +70,11 @@ NONEXISTENT_CHALLENGES = (
 )
 MULTYPOINT_FUNCTIONS = (
     "codewars",
-    "Extreme trainer"
+    "Extreme trainer"   # Ask if we need to create a constant for this name
 )
 
 
 class MultypointChall:
-    """helps scrape challenges with multi ponits"""
     def __init__(self, data, challenge_name, category):
         """gets challenge name and its category.
         :param data: the data to be analyzed.
@@ -125,7 +124,8 @@ def import_challenges():
 
     for category in all_challenges:
         update_category(category['table_name'])
-
+        # someone needs to add to the update_challenge function an option to upload
+        # a mentor and times to solve
         for challenge in category['challenges']:
             if challenge['challenge_name'].lower() == "codewars":      # here I ignored codewars
                 continue

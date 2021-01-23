@@ -35,7 +35,7 @@ MAIN_PAGE_URL = "https://beta.wikiversity.org/wiki/%D7%9C%D7%99%D7%9E%D7%95%D7%9
 
 @dataclass
 class UsersTable:
-    """this object helps taking all users from each category.
+    """contains invformation on each table
     """
     status: str
     users: list = field(default_factory=list)
@@ -146,6 +146,8 @@ def users_tables_organize(tables):
     :return: list of all the users in each category.
     :rtype: list[dataclass(str, list, bool)].
     """
+
+    # Check if the ninja parameter is neccessary
     users_categories = [UsersTable('player', ninja=True),
                         UsersTable('player'),
                         UsersTable('zombie'),
@@ -312,7 +314,7 @@ def import_challenges(table) -> list:
     challenges = list()
 
     for row in table.tbody.find_all('tr')[1:]:
-        challenge_name, points, _, description, _, dl = row.find_all('td')
+        challenge_name, points, mentor, description, solve_times, dl = row.find_all('td')
 
         dl = dl.text.replace('\n', '')
 
@@ -321,6 +323,8 @@ def import_challenges(table) -> list:
 
         challenges.append(dict({'challenge_name': challenge_name.text.replace('\n', ''),
                                 'points': points.text.replace('\n', ''),
+                                'mentor': mentor,
+                                'solve times': solve_times,
                                 'description': description.text.replace('\n', ''),
                                 'deadline': dl}))
 
