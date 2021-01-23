@@ -35,6 +35,12 @@ def get_game(category: Category):
         return None
 
 def get_category_scores(category: Category):
+    """
+    Returns a table of users and their scores.
+
+    :param category: A category to limit the table.
+    :return: A dictionary that it's keys are users and the score as their value.
+    """
     solutions = Solution.objects.filter(challenge__category=category).select_related("user").select_related("challenge")
     d = dict()
 

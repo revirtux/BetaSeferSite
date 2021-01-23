@@ -14,6 +14,14 @@ from django.db.models.query import prefetch_related_objects
 
 
 def get_score_table(state: str = "", house: str = ""):
+    """
+    Returns a table with the score of every player in every category.
+
+    :param state: Only return players in this state
+    :param house: Only return players in this house
+    :return: A dictionary with keys as User objects and values as more dictionaries of Category objects and their values
+        are the score of the user in the category.
+    """
     if state and state not in USER_STATES:
         return []
     if house and house not in get_houses_name():
@@ -39,10 +47,23 @@ def get_score_table(state: str = "", house: str = ""):
     return d
 
 def new_get_top_three(scores: dict) -> list:
+    """
+    Returns the top 3 subjects and their score as a Subject object.
+
+    :param scores: A scores dictionary where the keys are categories and the values are scores
+    :return: The top 3 Subject objects in an array
+    """
     return [Subject(name, score) for name, score in (
             Counter(scores).most_common(3) + [('Null', 0)] * 3)]
 
 def get_main_table(state: str = "", house: str = ""):
+    """
+    Gets a scores table of sorted Player objects which can be filtered by house and state.
+
+    :param state: A state filter
+    :param house: A house filter
+    :return: Scores table as an array of Player objects.
+    """
     players = User.objects.prefetch_related("houses")
 
     score_table = get_score_table(state, house)
@@ -97,6 +118,13 @@ def get_all_players(state: str = "", house: str = "") -> list:
 """
 
 def dox_user(user: User) -> Player:
+    """
+    Returns data about a User object in a Player object.
+    Not recommended for use because of performance issues.
+
+    :param user: A user object
+    :return: A corresponding Player object.
+    """
     total, subjects = get_top_three(Solution.objects.filter(user=user))
     return Player(
         user.nick,
