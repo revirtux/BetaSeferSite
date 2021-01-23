@@ -2215,6 +2215,11 @@ input, select, textarea {
 			display:inline-flex;
 			flex-grow:1;
 			height: 12vw;
+			position:relative;
+			color: white;
+			object-fit: cover;
+			opacity: 0.7;
+		
 		}
 		
 		div.container-tile > .image > img {
@@ -3453,10 +3458,12 @@ td {
 
 .hover-over {
 	transition: all 0.2s ease-in-out;
+	font-size: 10px;
 }
 
 .hide {
 	display: none;
+
 }
 
 .hover-over:hover {
@@ -3464,20 +3471,18 @@ td {
 	-webkit-transform: scale(1.05);
 	transform: scale(1.05);
 	font-size: 20px;
+	opacity: 1;
 }
 
 .hover-over:hover .hide {
 	display: block;
 }
 
-.image {
-	position:relative;
-	color: white;
-	font-size: 10px;
-	object-fit: cover;
+.hover-over:hover p {
+	max-height: 0;
 }
 
-.image .text {
+.tile-text {
 	top: 0;
 	left: 0;
     position:absolute;
@@ -3488,5 +3493,13 @@ td {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	direction: ltr;
+	direction: ltr; 
+}
+
+a.tile-text > h2 {
+	color: white;
+}
+
+a.tile-text > p {
+	margin-top: -5%;
 }

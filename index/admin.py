@@ -35,15 +35,16 @@ class LevelListFilter(admin.SimpleListFilter):
         f = [user.nick for user in qs.all() if dox_user(user).rank.color == self.value()]
         return qs.filter(nick__in=f)
     
-def user_color(user):
-    color = dox_user(user).rank.color.title()
-    if color == "Ninja":
-        color = "Black"
-    return format_html('<span style="color: {}; text-shadow: 0 0 2px black;">{}</span>', color, color)
-user_color.short_description = 'Color'
 
 class UserAdmin(GeneralAdmin):
     levelfunc = lambda obj: dox_user(obj).rank.level
+
+    def user_color(user):
+        color = dox_user(user).rank.color.title()
+        if color == "Ninja":
+            color = "Black"
+        return format_html('<span style="color: {}; text-shadow: 0 0 2px black;">{}</span>', color, color)
+    user_color.short_description = 'Color'
 
     list_filter = ('ninja', 'state', LevelListFilter)
     search_fields = ('nick',)
