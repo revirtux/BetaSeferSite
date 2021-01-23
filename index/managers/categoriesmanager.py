@@ -1,6 +1,7 @@
 from ..models.users import User
 from ..models.categories import Category
 from ..models.challenges import Challenge
+from ..models.solutions import Solution
 
 
 def update_category(name: str, description: str = "", manager: str = ""):
@@ -20,6 +21,30 @@ def update_category(name: str, description: str = "", manager: str = ""):
 def get_all_categories():
     return Category.objects.all()
 
-def get_all_challenges(category: Category):
-    return Challenge.objects.filter(category__name=Category.name)
+def get_category_object(name: str=""):
+    results = Category.objects.filter(name=name)
+    return None if len(results) == 0 else results[0]
 
+def get_all_challenges(category_name: str):
+    return Challenge.objects.filter(category__name=category_name)
+
+def get_game(category: Category):
+    try:
+        return category.game
+    except:
+        return None
+
+def get_category_scores(category: Category):
+    """
+    Returns a table of users and their scores.
+
+    :param category: A category to limit the table.
+    :return: A dictionary that it's keys are users and the score as their value.
+    """
+    solutions = Solution.objects.filter(challenge__category=category).select_related("user").select_related("challenge")
+    d = dict()
+
+    for sol in solutions:
+        d[sol.user] = d.get(sol.user, 0) + sol.get_score()
+    
+    return d

@@ -209,7 +209,11 @@
                           {% for index, player in players %}
                           <tr>
                             <td>{{ index }}</td>
-                            <td>{{ player.nick }}</td>
+                            <td>{{ player.nick }} <br/>
+                            {% for rank in player.ranks %}
+                              <img src="{{ rank.badge.url }}" alt="" />
+                            {% endfor %}
+                            </td>
                             <td class="{{ player.rank.color }}">{{ player.rank.level }}</td>
                             <td>{{ player.first.name }}</td>
                             <td>{{ player.first.score }}</td>
@@ -395,7 +399,7 @@
                           {%else %}
                             <img src="{% static "images/pic01.jpg" %}" alt="" />
                           {%endif %}
-                            <a href="#" class="tile-text">
+                            <a href="/challenges/{{ category.name }}" class="text">
                               <h2>{{ category.name }}</h2>
                               {% if category.description %}
                                 <p class="hide">{{ category.description }}</p>

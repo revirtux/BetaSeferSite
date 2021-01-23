@@ -4,13 +4,14 @@ from .models.categories import Category
 from .models.challenges import Challenge
 from .models.solutions import Solution
 from .models.houses import House
+from .models.games import Game, GameRank
 from .managers.usersmanger import dox_user
 from django.db.models.query import QuerySet
 from django.utils.html import format_html
 from django.db.models import IntegerField, Value, F, Aggregate
 
 class GeneralAdmin(admin.ModelAdmin):
-    pass
+    save_as = True
 
 class LevelListFilter(admin.SimpleListFilter):
     title = 'Belt'
@@ -76,7 +77,7 @@ class SolutionAdmin(GeneralAdmin):
     get_category.short_description = 'Category'
     get_category.admin_order_field = 'challenge__category'
 
-    list_filter = ('challenge__category',)
+    list_filter = ('challenge__category', 'challenge__name', 'user__nick')
     search_fields = ('challenge__name', 'user__nick')
     list_display = ('get_nick', 'get_name', 'get_category', 'multipoint')
 
@@ -86,3 +87,5 @@ admin.site.register(Category, GeneralAdmin)
 admin.site.register(Challenge, ChallengeAdmin)
 admin.site.register(Solution, SolutionAdmin)
 admin.site.register(House, GeneralAdmin)
+admin.site.register(Game, GeneralAdmin)
+admin.site.register(GameRank, GeneralAdmin)
