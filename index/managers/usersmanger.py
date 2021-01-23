@@ -7,6 +7,13 @@ from ..models.houses import House
 from .playerutils import Subject, Player, get_rank
 from .housesmanager import get_houses_name
 
+"""
+Used by the function ./views.py/profile
+TODO: Add a function to dox a user without a user object (@AmitTPB)
+"""
+def get_user_by_nick(nick):
+    return User.objects.filter(nick=nick).first()
+
 
 def get_all_players(state: str = "", house: str = "") -> list:
     if state and state not in USER_STATES:
