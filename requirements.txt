@@ -13,3 +13,4 @@ soupsieve==2.0.1
 sqlparse==0.3.1
 urllib3==1.25.10
 django-silk==4.1.0
+tqdm==4.56.0
