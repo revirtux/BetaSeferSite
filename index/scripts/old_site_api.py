@@ -157,19 +157,22 @@ def import_solutions():
             if challenge['challenge_name'] in NONEXISTENT_CHALLENGES:
                     continue
             for solver in challenge['solvers']:
-                if not username_validate(solver.replace(" ", "")):
-                    continue
-                if challenge['challenge_name'] in MULTYPOINT_FUNCTIONS:
-                    exec_multypoints_functions(
-                        solver, challenge['challenge_name'], category['subject'])
-                elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES or challenge['challenge_name'] in SECURITY_CHALLENGES:
-                    update_multipoint(
-                        solver, challenge['challenge_name'], category['subject'])
-                elif challenge['challenge_name'] == "Extreme trainer":
-                    update_extreme_trainer(solver, category['subject'])
-                else:
-                    update_solution(
-                        solver.replace(" ", ""), challenge['challenge_name'], category['subject'])
+                try:
+                    if not username_validate(solver.replace(" ", "")):
+                        continue
+                    if challenge['challenge_name'] in MULTYPOINT_FUNCTIONS:
+                        exec_multypoints_functions(
+                            solver, challenge['challenge_name'], category['subject'])
+                    elif challenge['challenge_name'] in MULTYPOINT_CHALLENGES or challenge['challenge_name'] in SECURITY_CHALLENGES:
+                        update_multipoint(
+                            solver, challenge['challenge_name'], category['subject'])
+                    elif challenge['challenge_name'] == "Extreme trainer":
+                        update_extreme_trainer(solver, category['subject'])
+                    else:
+                        update_solution(
+                            solver.replace(" ", ""), challenge['challenge_name'], category['subject'])
+                except Exception as e:
+                    print(e)
 
 
 def update_multipoint(data: str, challenge_name: str, category: str):
