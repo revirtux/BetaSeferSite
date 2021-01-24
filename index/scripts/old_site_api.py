@@ -60,7 +60,8 @@ SECURITY_CHALLENGES = {
 NONEXISTENT_USERS = (
     "shot4shot",
     "cripyice",
-    "cuphead"
+    "cuphead",
+    "ray"
 )
 
 NONEXISTENT_CHALLENGES = (
