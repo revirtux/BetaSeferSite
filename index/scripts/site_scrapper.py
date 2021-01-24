@@ -25,10 +25,11 @@ ZOMBIES_TABLE_INDEX = 2
 PENSIONS_TABLE_INDEX = 3
 COMMEMORATION_TABLE_INDEX = 4
 NON_TECH_TABLES = 4
-TABLE_OFFSET = 15
-LAST_CHALLENGES_TABLE = 36  # actually 37, ignored resources table
-USELESS_TABLE_1 = 17
-USELESS_TABLE_2 = 19
+TABLE_OFFSET = 17
+LAST_CHALLENGES_TABLE = 39  # actually 40, ignored resources table
+USELESS_TABLE_1 = 19
+USELESS_TABLE_2 = 21
+FIRST_CHALLENGE_MENU_TAG = "toclevel-2 tocsection-61"
 MAIN_PAGE_URL = "https://beta.wikiversity.org/wiki/%D7%9C%D7%99%D7%9E%D7%95%D7%93%" \
     "D7%99_%D7%9E%D7%97%D7%A9%D7%91%D7%99%D7%9D_%D7%91%D7%A9%D7%99%D7%98%D7%AA_%D7%91%D7%98%D7%90"
     
@@ -272,6 +273,7 @@ def import_challenges_organize(tables, challenges: list) -> list:
     :return: list of all the challenges.
     :rtype: list
     """
+
     for table in range(TABLE_OFFSET, LAST_CHALLENGES_TABLE):
         if table != USELESS_TABLE_1 and table != USELESS_TABLE_2:
             challenges[table - TABLE_OFFSET - (table > USELESS_TABLE_1) - (
@@ -288,21 +290,20 @@ def import_challenges_table_name(soup) -> list:
     :rtype: list[dict{str, list[str]}]
     """
     challenges_table_names = list()
-    div_tags = soup.find_all('div', class_="mw-content-ltr")
+    div_tag = soup.find_all('div', class_="mw-content-rtl")[0]
 
-    for div_tag in div_tags:
-        li_tags = div_tag.find_all('li', class_="toclevel-1 tocsection-54")
+    challenges_section = div_tag.find_all('h2')[-1]
+    
+    categories_tags = challenges_section.find_next_siblings('h3')[:-1]
+    for category in categories_tags:
+        category_name = category.find_all('span')[0].text.strip()
 
-        for li_tag in li_tags:
-            challenges_table_names = [challenge_name.text for challenge_name in li_tag.find_all(
-                'span', class_="toctext")[1:]]
-
-            break
-    challenges_table_names = [{'table_name': challenges_table_names[i].replace(" Challenges", ""), 'challenges': [
-    ]} for i in range(len(challenges_table_names))]
-
+        if not category_name:
+            category_name = category.find_all('span')[1].text.strip()
+        
+        challenges_table_names.append({'table_name': category_name.replace(" Challenges", ""), 'challenges': []})
+        
     return challenges_table_names
-
 
 def import_challenges(table) -> list:
     """Gets the challenges of each category from the page (c, python, java... etc)
