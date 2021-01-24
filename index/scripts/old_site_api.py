@@ -131,7 +131,7 @@ def import_challenges():
         # someone needs to add to the update_challenge function an option to upload
         # a mentor and times to solve
         for challenge in category['challenges']:
-            if challenge['challenge_name'].lower() == "codewars":      # here I ignored codewars
+            if challenge['challenge_name'].lower() in ("codewars", "codewars 2020"):      # here I ignored codewars
                 continue
             elif 'codingbat' in challenge['challenge_name'].lower():
                 update_challenge(challenge['challenge_name'],
