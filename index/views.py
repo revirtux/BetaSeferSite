@@ -62,6 +62,8 @@ def import_old_site(request):
 
 
 def dynamic_css(request, house_name):
+    house_name = house_name.replace("-", " ")
+
     template = loader.get_template('colors.css')
     resp = HttpResponse(template.render(
         {
