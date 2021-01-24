@@ -18,6 +18,7 @@ from ..managers.usersmanger import update_user
 from ..managers.solutionsmanager import update_solution
 from ..managers.challengesmanager import update_challenge
 from ..managers.categoriesmanager import update_category
+from tqdm import tqdm
 
 TWENTY = 20
 THIRTY = 30
@@ -104,7 +105,8 @@ def import_users():
     main_tables = get_main_tables()
     users_categories = users_tables_organize(main_tables)
 
-    for users_table in users_categories:
+    print("Import users...")
+    for users_table in tqdm(users_categories):
         for user in users_table.users:
             if "remarks" not in user:
                 update_user(user['name'], users_table.status, user['houses'])
@@ -122,7 +124,8 @@ def import_challenges():
     all_challenges = import_challenges_organize(
         challenges_tables, challenges_name)
 
-    for category in all_challenges:
+    print("Import challenges...")
+    for category in tqdm(all_challenges):
         update_category(category['table_name'])
         # someone needs to add to the update_challenge function an option to upload
         # a mentor and times to solve
@@ -147,7 +150,8 @@ def import_solutions():
     """import all of the solved challenges from the 2nd page"""
     all_solved_challenges = solved_challenges_table_organize()
 
-    for category in all_solved_challenges:
+    print("Import solutions...")
+    for category in tqdm(all_solved_challenges):
         for challenge in category['challenges']:
             if challenge['challenge_name'] in NONEXISTENT_CHALLENGES:
                     continue
