@@ -74,9 +74,8 @@ def dynamic_css(request, house_name):
 
 def challenges_path(request, category_name):
     category_name = category_name.replace("-", " ")
-    print(category_name)
-    category_list = categoriesmanager.get_all_categories().filter(
-        name=category_name.replace("-", " "))
+
+    category_list = categoriesmanager.get_all_categories().filter(name=category_name)
     if len(category_list) != 0:
         category = category_list[0]
         template = loader.get_template('challenge.html')
