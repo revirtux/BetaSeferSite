@@ -315,7 +315,7 @@ def import_challenges(table) -> list:
     challenges = list()
 
     for row in table.tbody.find_all('tr')[1:]:
-        challenge_name, points, mentor, description, solve_times, dl = row.find_all('td')
+        challenge_name, points, _, description, dl, _ = row.find_all('td')
 
         dl = dl.text.replace('\n', '')
 
@@ -324,8 +324,6 @@ def import_challenges(table) -> list:
 
         challenges.append(dict({'challenge_name': challenge_name.text.replace('\n', ''),
                                 'points': points.text.replace('\n', ''),
-                                'mentor': mentor,
-                                'solve times': solve_times,
                                 'description': description.text.replace('\n', ''),
                                 'deadline': dl}))
 
