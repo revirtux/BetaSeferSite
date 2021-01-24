@@ -101,7 +101,7 @@
                     <div class="house-sym">
                       {% for house in houses %}
                         {% if house.image %}
-                          <img src="{{ house.image.url }}" height="60" width="auto" alt="{{ house.name }}" onclick="window.location='/house/{{house.name}}'">
+                          <img src="{{ house.image.url }}" height="60" width="auto" alt="{{ house.name }}" onclick="window.location='/house/{{house.name.split|join:"-"}}'">
                         {% endif %}
                       {% endfor %}
                     </div>
@@ -399,7 +399,7 @@
                           {%else %}
                             <img src="{% static "images/pic01.jpg" %}" alt="" />
                           {%endif %}
-                            <a href="/challenges/{{ category.name }}" class="tile-text">
+                            <a href="/challenges/{{ category.name.split|join:"-" }}" class="tile-text">
                               <h2>{{ category.name }}</h2>
                               {% if category.description %}
                                 <p class="hide">{{ category.description }}</p>

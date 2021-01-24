@@ -44,6 +44,8 @@ def index(request):
 
 
 def house_path(request, house_name):
+    house_name = house_name.replace("-", " ")
+
     template = loader.get_template('house.html')
     players = usersmanger.get_main_table(house=house_name.title())
     house = housesmanager.get_house(house_name.title())
@@ -69,8 +71,12 @@ def dynamic_css(request, house_name):
     resp['Content-Type'] = 'text/css'
     return resp
 
+
 def challenges_path(request, category_name):
-    category_list = categoriesmanager.get_all_categories().filter(name=category_name)
+    category_name = category_name.replace("-", " ")
+    print(category_name)
+    category_list = categoriesmanager.get_all_categories().filter(
+        name=category_name.replace("-", " "))
     if len(category_list) != 0:
         category = category_list[0]
         template = loader.get_template('challenge.html')
