@@ -11,14 +11,13 @@ Exceptions:
     Reversing & Pwning category since it appeard twice (also in C catogory)
 *   row 129: challenges doesn't exist in the challenges table
 """
-
-from .site_scrapper import users_tables_organize, get_main_tables, solved_challenges_table_organize
-from .site_scrapper import import_challenges_organize, Scrapper, Challenges
-from ..managers.usersmanger import update_user
+from tqdm import tqdm
 from ..managers.solutionsmanager import update_solution
 from ..managers.challengesmanager import update_challenge
-from ..managers.categoriesmanager import update_category
-from tqdm import tqdm
+from .site_scrapper import import_challenges_organize, Scrapper, Challenges
+from ..managers.categoriesmanager import update_category, get_category_object
+from ..managers.usersmanger import update_user, get_user_by_nick, get_score_table
+from .site_scrapper import users_tables_organize, get_main_tables, solved_challenges_table_organize
 
 TWENTY = 20
 THIRTY = 30
@@ -34,7 +33,8 @@ MULTYPOINT_CHALLENGES = (
     u"אתגרי משחק Narnia בoverthewire.org",
     u"משחק הXSS של גוגל",
     u"אתגרי הXSS של escape.alf.nu",
-    "yamagata's XSS challenges"
+    "yamagata's XSS challenges",
+    "ghost points"
 )
 
 SECURITY_CHALLENGES = {
@@ -101,22 +101,22 @@ class MultypointChall:
                         self.category, self.points)
 
 
-def import_users():
+def update_users_in_db():
     """imports all the users in page"""
     main_tables = get_main_tables()
-    users_categories = users_tables_organize(main_tables)
+    users_categories = users_tables_organize(main_tables)   # Returns a list with all users information
 
     print("Import users...")
     for users_table in tqdm(users_categories):
         for user in users_table.users:
             if "remarks" not in user:
-                update_user(user['name'], users_table.status, user['houses'])
+                update_user(user['name'], users_table.status, user['houses'])   # Updates db 
             else:
-                update_user(user['name'], users_table.status,
+                update_user(user['name'], users_table.status,   # Updates db
                             user['houses'], user['remarks'])
 
 
-def import_challenges():
+def update_challenges_in_db():
     """imports all the users in page"""
     challenges_data = Challenges()
     challenges_tables = challenges_data.get_challenges_tables()
@@ -145,9 +145,15 @@ def import_challenges():
                                  challenge['description'],
                                  int(float(challenge['points']) + 0.5),
                                  challenge['deadline'])
+    update_challenge("ghost points",
+                     "ghost",
+                     "has been created to cover up the gap of the missing points",
+                     1,
+                     "-")
+    
 
 
-def import_solutions():
+def update_solutions_in_db():
     """import all of the solved challenges from the 2nd page"""
     all_solved_challenges = solved_challenges_table_organize()
 
@@ -158,7 +164,7 @@ def import_solutions():
                     continue
             for solver in challenge['solvers']:
                 try:
-                    if not username_validate(solver.replace(" ", "")):
+                    if not username_validation(solver.replace(" ", "")):
                         continue
                     if challenge['challenge_name'] in MULTYPOINT_FUNCTIONS:
                         exec_multypoints_functions(
@@ -265,9 +271,9 @@ def update_extreme_trainer(data, category):
                         points)
 
 
-def username_validate(name):
+def username_validation(name):
     """checks if username if valid.
-    :param name: the name to validate.
+    :param name: user name.
     :type name: str.
     """
     if name.lower() in NONEXISTENT_USERS:
@@ -275,8 +281,19 @@ def username_validate(name):
     return 1
 
 
+def get_user_information_from_db(name: str = "", status: str = "" category: str = ""):
+    """returns 
+    """
+    pass
+
+
+def cover_points_gap(name: str = "", category: str = ""):
+    main_tables = get_main_tables()
+    users_information = users_tables_organize(main_tables)
+
+
 def update_from_old_site():
     """updates the new site from the old site"""
-    import_users()
-    import_challenges()
-    import_solutions()
+    update_users_in_db()
+    update_challenges_in_db()
+    update_solutions_in_db()
