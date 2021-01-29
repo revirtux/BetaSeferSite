@@ -5,6 +5,9 @@ from .playerutils import Player, get_rank
 from .categoriesmanager import get_category_scores
 from ..models.solutions import Solution
 
+def get_all_games():
+    return Game.object.all()
+
 def get_game_table(game: Game):
     """
     Returns the table of a given Game object.
