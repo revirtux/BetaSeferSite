@@ -42,6 +42,10 @@ def get_game_table(game: Game):
     return users
 
 
+def get_all_games(user: User):
+    Game.objects.filter(name="C")
+
+
 def get_badges(game: Game):
     """
     Returns the the badges of all players in a given game.

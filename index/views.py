@@ -93,4 +93,24 @@ def challenges_path(request, category_name):
                 'game_managers': game.managers.all() if game else []
             }, request))
     else:
-        return HttpResponse("<p>No such category</p>", status=404)
+        return Http404("<p>No such category</p>", 404)
+
+
+def profile(request, usernick):
+    template = loader.get_template('profile.html')
+    user = usersmanger.get_user_by_nick(usernick)
+    player = usersmanger.dox_user(user)
+
+    categories = usersmanger.get_user_scores(user)
+
+    player_information = {
+        'nickname': player.nick,
+        'level': player.rank.level,
+        'belt': player.rank.color,
+        'state': user.state,
+        'houses': player.houses,
+        'categories': categories.items(),
+        'player_image': player.image,
+    }
+
+    return HttpResponse(template.render(player_information, request))

@@ -3503,3 +3503,27 @@ a.tile-text > h2 {
 a.tile-text > p {
 	margin-top: -5%;
 }
+
+.category-sym {
+	text-align: center;
+    justify-content: center;
+    width: 100%;
+    display: inline-block;
+}
+
+.category-sym > img:not(first-child) {
+	margin-right: 1%;
+}
+
+.category-image {
+    border-radius: 6px;
+	margin-top: 10px;
+	margin-left: 10px;
+	overflow: hidden;
+	position: relative;
+}
+
+.category-container {
+    display: inline-flex;
+    padding: 0 5%;
+}

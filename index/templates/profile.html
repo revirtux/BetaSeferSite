@@ -1,0 +1,139 @@
+{% load static %}<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>The Beta Program - {{ nickname }}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static "assets/css/main.css" %}" />
+    <script src="https://cdn.tiny.cloud/1/2vc39hrtpi2a2h5isovuvyzp4hp8x1gmn6xkahhne24w1qs8/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+    </script>
+    
+    <script>
+
+      $(document).ready(function() {
+      
+      $('#markItUp').markItUp(mySettings);
+      
+      });
+      
+    </script>
+
+  </head>
+  <body class="is-preload yui-skin-sam">
+
+    <!-- Header -->
+      <section id="header">
+        <header>
+          <span class="image avatar">
+            {% if player_image %}
+              <img src="{{ player_image.url }}" alt="{{ nickname }}"/></span>
+            {%else %}
+              <img src="{% static "images/avatar.jpg" %}" alt="{{ nickname }}"/></span>
+            {%endif %}
+
+            {%if motto %}
+                <p>{{ motto }}</p>
+            {% endif %}
+            <figure style="margin-top: 20%;">
+              <div class="house-sym">
+                  {% for house in houses %}
+                    {% if house.image %}
+                      <img src="{{ house.image.url }}" height="60" width="auto" alt="{{ house.name }}" onclick="window.location='/house/{{ house.name }}'">
+                    {% endif %}
+                  {% endfor %}
+                </div>
+            </figure>
+        </header>
+        <nav id="nav">
+          <ul>
+            <li><a href="#about" class="active">אודות</a></li>
+            <li><a href="#code-ninja">נקודות</a></li>
+            <li><a href="#badges">תארים</a></li>
+          </ul>
+        </nav>
+        <footer>
+          <ul class="icons">
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+            <li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+            <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+          </ul>
+        </footer>
+      </section>
+
+    <!-- Wrapper -->
+      <div id="wrapper">
+
+        <!-- Main -->
+          <div id="main">
+
+            <!-- About -->
+            <section id="about">
+              <div class="image main" data-position="center">
+                <img src="{% static "images/banner.jpg" %}" alt="Banner" />
+              </div>
+              <div class="container">
+                <h1 style="text-align: center; font-size: 280%; color: blue;">{{ nickname }}</h1>
+              </div>
+            </section>
+
+            <!-- Code Ninja -->
+            <section id="code-ninja">
+              <div class="container">
+                <h3>
+                  נקודות
+                </h3>
+                <div>
+                  <figure>
+                    <div class="category-sym" style="">
+                      {% for category in categories %}
+                        <div class="category-container">
+                          <div>
+                            {% if category.0.banner %}
+                              <img src="{{ category.0.banner.url }}" height="140" width="auto" alt="{{ category.name }}" onclick="#'">
+                              <figcaption>{{ category.1 }}</figcaption>
+                            {% endif %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </figure>
+                </div>
+              </div>
+            </section>
+
+              <!-- Badges -->
+              <section id="badges">
+                <div class="container">
+                  <h3>תארים</h3>
+                  <section>
+                    <div class="box alt">
+                    </div>
+                  </section>
+                </div>
+              </section>
+          </div>
+
+        <!-- Footer -->
+          <section id="footer" dir="ltr" align="center">
+            <div class="container">
+              <ul class="copyright">
+                <li>&copy; Beta project. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+              </ul>
+            </div>
+          </section>
+
+      </div>
+
+    <!-- Scripts -->
+      <script src="{% static "assets/js/jquery.min.js" %}"></script>
+      <script src="{% static "assets/js/jquery.scrollex.min.js" %}"></script>
+      <script src="{% static "assets/js/jquery.scrolly.min.js" %}"></script>
+      <script src="{% static "assets/js/browser.min.js" %}"></script>
+      <script src="{% static "assets/js/breakpoints.min.js" %}"></script>
+      <script src="{% static "assets/js/util.js" %}"></script>
+      <script src="{% static "assets/js/main.js" %}"></script>
+  </body>
+</html>
