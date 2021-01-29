@@ -8,7 +8,7 @@ from ..models.categories import Category
 from ..models.games import Game
 from .playerutils import Subject, Player, get_rank
 from .housesmanager import get_houses_name, get_all_houses
-from .gamesmanager import get_badges
+from .gamesmanager import get_badges, get_all_games
 from .categoriesmanager import get_all_categories, get_category_object
 from django.db.models.query import prefetch_related_objects
 
@@ -50,6 +50,25 @@ def get_score_table(state: str = "", house: str = ""):
         if user not in d:
             d[user] = dict()
         d[user][category] = d[user].get(category, 0) + sol.get_score()
+    
+    return d
+
+def get_user_scores(user: User):
+    """
+    Returns a dict with the score of a user in each category.
+
+    :param user: The user
+    :return: A dictionary with keys as Categories and values as his scores.
+    """
+    
+    solutions = Solution.objects.select_related("user").select_related("challenge__category")
+    solutions = solutions.filter(user=user)
+    
+    d = dict()
+
+    for sol in solutions:
+        category = sol.challenge.category
+        d[category] = d.get(category, 0) + sol.get_score()
     
     return d
 
