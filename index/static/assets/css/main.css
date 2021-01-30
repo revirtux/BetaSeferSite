@@ -2224,7 +2224,7 @@ input, select, textarea {
 		
 		div.container-tile > .image > img {
 		flex-grow:1;
-		object-fit: cover;
+		object-fit: scale-down;
 		}
 		  
 
@@ -3493,7 +3493,9 @@ td {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	direction: ltr; 
+	direction: ltr;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	border-bottom: none !important;
 }
 
 a.tile-text > h2 {
