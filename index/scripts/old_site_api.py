@@ -145,12 +145,13 @@ def update_challenges_in_db():
                                  challenge['description'],
                                  int(float(challenge['points']) + 0.5),
                                  challenge['deadline'])
+    '''
     update_challenge("ghost points",
                      "ghost",
                      "has been created to cover up the gap of the missing points",
                      1,
                      "-")
-    
+    '''
 
 
 def update_solutions_in_db():
@@ -193,7 +194,7 @@ def update_multipoint(data: str, challenge_name: str, category: str):
     chall = MultypointChall(data, challenge_name, category)
     chall.parse()
 
-    if not username_validate(chall.name):
+    if not username_validation(chall.name):
         return
     
     if challenge_name in SECURITY_CHALLENGES:
@@ -281,15 +282,19 @@ def username_validation(name):
     return 1
 
 
-def get_user_information_from_db(name: str = "", status: str = "" category: str = ""):
+def get_user_points_from_db(name: str = "", category: str = "", status: str = ""):
     """returns 
     """
-    pass
+    points = get_user_points_from_db(status)
+
+    return points[name][category]
 
 
 def cover_points_gap(name: str = "", category: str = ""):
     main_tables = get_main_tables()
     users_information = users_tables_organize(main_tables)
+
+
 
 
 def update_from_old_site():

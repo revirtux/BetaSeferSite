@@ -11,12 +11,16 @@ Exceptions:
 """
 
 import json
+import re
 import codecs
 import requests
 from os import mkdir
 from bs4 import BeautifulSoup
 from dataclasses import dataclass, field
 
+FIRST_SUBJECT = 0
+SECOND_SUBJECT = 1
+THIRD_SUBJECT = 2
 LIMBO_PROJECTS_TABLE_INDEX = -1
 PWN_GAME_TABLE_INDEX = -4
 NINJAS_TABLE_INDEX = 0
@@ -26,9 +30,9 @@ PENSIONS_TABLE_INDEX = 3
 COMMEMORATION_TABLE_INDEX = 4
 NON_TECH_TABLES = 4
 TABLE_OFFSET = 17
-LAST_CHALLENGES_TABLE = 39  # actually 40, ignored resources table
-USELESS_TABLE_1 = 19
-USELESS_TABLE_2 = 21
+LAST_CHALLENGES_TABLE = 40  # actually 41, ignored resources table
+USELESS_TABLE_1 = 20
+USELESS_TABLE_2 = 22
 FIRST_CHALLENGE_MENU_TAG = "toclevel-2 tocsection-61"
 MAIN_PAGE_URL = "https://beta.wikiversity.org/wiki/%D7%9C%D7%99%D7%9E%D7%95%D7%93%" \
     "D7%99_%D7%9E%D7%97%D7%A9%D7%91%D7%99%D7%9D_%D7%91%D7%A9%D7%99%D7%98%D7%AA_%D7%91%D7%98%D7%90"
@@ -40,8 +44,6 @@ class UsersTable:
     """
     status: str
     users: list = field(default_factory=list)
-    ninja: bool = False
-
 
 class Scrapper:
     """scraps tables and headers from the page. applies Beautiful soup on the site."""
@@ -149,24 +151,28 @@ def users_tables_organize(tables):
     """
 
     # Check if the ninja parameter is neccessary
-    users_categories = [UsersTable('player', ninja=True),
+    users_categories = [UsersTable('player'),
                         UsersTable('player'),
                         UsersTable('zombie'),
                         UsersTable('pensioner'),
                         UsersTable('commemoration')]
 
+    subjects = {"subjects": [{"Name": None, "Points": None, "Borrowed": 0},
+                             {"Name": None, "Points": None, "Borrowed": 0},
+                             {"Name": None, "Points": None, "Borrowed": 0}]}
+
     ninja, active, zombie, pension, commemoration, *_ = tables
 
-    ninja_active(users_categories, ninja, NINJAS_TABLE_INDEX)
-    ninja_active(users_categories, active, ACTIVES_TABLE_INDEX)
-    zombie_info(users_categories, zombie)
-    pension_commemoration_info(users_categories, pension, PENSIONS_TABLE_INDEX)
-    pension_commemoration_info(users_categories, commemoration, COMMEMORATION_TABLE_INDEX)
+    ninja_active(users_categories, ninja, NINJAS_TABLE_INDEX, subjects)
+    ninja_active(users_categories, active, ACTIVES_TABLE_INDEX, subjects)
+    zombie_info(users_categories, zombie, subjects)
+    pension_commemoration_info(users_categories, pension, PENSIONS_TABLE_INDEX, subjects)
+    pension_commemoration_info(users_categories, commemoration, COMMEMORATION_TABLE_INDEX, subjects)
 
     return users_categories
 
 
-def ninja_active(users_categories, table, table_index):
+def ninja_active(users_categories: list, table, table_index: int, subjects):
     """gets all the active ninjas into users_categories.
     :param users_categories: a list with all the users categories, gets ninjas here.
     :type users_categories: list[dataclass(str, list, bool)].
@@ -176,13 +182,33 @@ def ninja_active(users_categories, table, table_index):
     :type table_index: int
     """
     for tr in table.tbody.find_all('tr')[1:]:
-        _, name, *_, houses = tr.find_all('td')
+        subjects["subjects"] = [subject.fromkeys(subject, 0) for subject in subjects["subjects"]]
+
+        _,                                              \
+        name,                                           \
+        _,                                              \
+        subjects["subjects"][FIRST_SUBJECT]["Name"],    \
+        subjects["subjects"][FIRST_SUBJECT]["Points"],  \
+        subjects["subjects"][SECOND_SUBJECT]["Name"],   \
+        subjects["subjects"][SECOND_SUBJECT]["Points"], \
+        subjects["subjects"][THIRD_SUBJECT]["Name"],    \
+        subjects["subjects"][THIRD_SUBJECT]["Points"],  \
+        _,                                              \
+        houses = tr.find_all('td')
+    
+        for i in range(3):
+            subjects["subjects"][i]["Name"] = subjects["subjects"][i]["Name"].text.replace("\n", "")
+            subjects["subjects"][i]["Points"] = subjects["subjects"][i]["Points"].text.replace("\n", "")
+        
+        parsing_points(subjects)
+        
         houses = [house['title'].lstrip("House of").lstrip("The") for house in houses.find_all('a')]
+
         users_categories[table_index].users.append(
-            dict({'name': name.a.text, 'houses': houses}))
+            dict({'name': name.a.text, 'houses': houses}, **subjects))
 
 
-def zombie_info(users_categories, table):
+def zombie_info(users_categories, table, subjects):
     """gets all the zombies into users_categories.
     :param users_categories: a list with all the users categories, gets zombies here.
     :type users_categories: list[dataclass(str, list, bool)].
@@ -190,42 +216,80 @@ def zombie_info(users_categories, table):
     :type table: bs4 element.
     """
     for tr in table.tbody.find_all('tr')[1:]:
-        _, name, _, remark, *_, houses = tr.find_all('td')
+        subjects["subjects"] = [subject.fromkeys(subject, 0) for subject in subjects["subjects"]]
+        _,                                      \
+        name,                                   \
+        _,                                      \
+        remark,                                 \
+        subjects["subjects"][FIRST_SUBJECT]["Name"],    \
+        subjects["subjects"][FIRST_SUBJECT]["Points"],  \
+        subjects["subjects"][SECOND_SUBJECT]["Name"],   \
+        subjects["subjects"][SECOND_SUBJECT]["Points"], \
+        subjects["subjects"][THIRD_SUBJECT]["Name"],    \
+        subjects["subjects"][THIRD_SUBJECT]["Points"],  \
+        houses = tr.find_all('td')
+
+        for i in range(3):
+            subjects["subjects"][i]["Name"] = subjects["subjects"][i]["Name"].text.replace("\n", "")
+            subjects["subjects"][i]["Points"] = subjects["subjects"][i]["Points"].text.replace("\n", "")
+        
+        parsing_points(subjects)
 
         houses = [house['title'].lstrip("House of").lstrip("The") for house in houses.find_all('a')]
         users_categories[ZOMBIES_TABLE_INDEX].users.append(
-            dict({'name': name.a.text, 'houses': houses, 'remarks': remark.text.replace('\n', '')}))
+            dict({'name': name.a.text, 'houses': houses, 'remarks': remark.text.replace('\n', '')}, **subjects))
 
 
-def pension_commemoration_info(users_categories, table, table_index):
+def pension_commemoration_info(users_categories, table, table_index, subjects):
     """gets all the beta users in commemoration into users_categories.
     :param users_categories: a list with all the users categories, gets commemoration here.
     :type users_categories: list[dataclass(str, list, bool)].
     :param table: the table of commemoration to be analyzed.
     :type table: bs4 element.
     :param table_index: the index of the commemoration table.
-    """
+    """ 
+    houses = list()
+
     for tr in table.tbody.find_all('tr')[1:]:
-        name, *_, houses = tr.find_all('td')
+        subjects["subjects"] = [subject.fromkeys(subject, 0) for subject in subjects["subjects"]]
 
-        if houses.a is not None:
+        try:
+            name,                                   \
+            _,                                      \
+            subjects["subjects"][FIRST_SUBJECT]["Name"],    \
+            subjects["subjects"][FIRST_SUBJECT]["Points"],  \
+            subjects["subjects"][SECOND_SUBJECT]["Name"],   \
+            subjects["subjects"][SECOND_SUBJECT]["Points"], \
+            subjects["subjects"][THIRD_SUBJECT]["Name"],    \
+            subjects["subjects"][THIRD_SUBJECT]["Points"],  \
+            houses = tr.find_all('td')
+        except ValueError:
+            name,                                   \
+            _,                                      \
+            subjects["subjects"][FIRST_SUBJECT]["Name"],    \
+            subjects["subjects"][FIRST_SUBJECT]["Points"],  \
+            subjects["subjects"][SECOND_SUBJECT]["Name"],   \
+            subjects["subjects"][SECOND_SUBJECT]["Points"], \
+            subjects["subjects"][THIRD_SUBJECT]["Name"],    \
+            subjects["subjects"][THIRD_SUBJECT]["Points"] = tr.find_all('td')
+
+        for i in range(3):
+            subjects["subjects"][i]["Name"] = subjects["subjects"][i]["Name"].text.replace("\n", "")
+            subjects["subjects"][i]["Points"] = subjects["subjects"][i]["Points"].text.replace("\n", "")
+        
+        parsing_points(subjects)
+        
+        if houses:
             houses = [house['title'].lstrip("House of").lstrip("The") for house in houses.find_all('a')]
-
-            users_categories[table_index].users.append(
-                dict({'name': name.text.replace('\n', ''), 'houses': houses}))
-        else:
-            users_categories[table_index].users.append(
-                dict({'name': name.text.replace('\n', ''), 'houses': []}))
+        users_categories[table_index].users.append(
+            dict({'name': name.text.replace('\n', ''), 'houses': houses}, **subjects))
 
 
 def games_tables_organize(tables) -> list:
     """connect to all of the functions that collects data about the games and organize the data.
     :param tables: all of the tables in the page.
     :type tables: bs4 element
-    :return: list
-    
-    
-     of dictionaries with all the games titles and ranks.
+    :return: list of dictionaries with all the games titles and ranks.
     :rtype: list[dict{str, list(str)}].
     """
     games = [{'name': 'samorai_c', 'ranks': []},
@@ -422,6 +486,29 @@ def limbo_projects(main_projects_in_limbo_table) -> list:
                          'last_seen': last_seen})
 
     return projects
+
+def parsing_points(subjects):
+    real = 0
+    total = 0
+    total_security_points = 0
+
+    for subject in range(3):
+        if "*" in subjects["subjects"][subject]["Points"] or \
+           "+" in subjects["subjects"][subject]["Points"]: 
+
+            if "*" in subjects["subjects"][subject]["Points"]:
+                total, real = list(map(int, re.findall("\d+", subjects["subjects"][subject]["Points"])))
+                # The borrowed points are equal to the total points minus the real points
+                subjects["subjects"][subject]["Borrowed"] = total - real
+            if " + " in subjects["subjects"][subject]["Points"]:
+
+                security_points_old_table, security_points_new_table = re.findall("\d+", subjects["subjects"][subject]["Points"])
+                total_security_points = int(security_points_old_table) + int(security_points_new_table)
+
+            elif "+" in subjects["subjects"][subject]["Points"]:
+                total = int(subjects["subjects"][subject]["Points"][:-1])
+
+            subjects["subjects"][subject]["Points"] = total + total_security_points
 
 
 def get_main_tables():
