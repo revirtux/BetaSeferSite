@@ -26,5 +26,3 @@ urlpatterns = [
 ] 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
-# silk is a profiling tool I use to look at the sql requests for performance issuse, might remove it in release version.
