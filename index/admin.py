@@ -5,6 +5,7 @@ from .models.challenges import Challenge
 from .models.solutions import Solution
 from .models.houses import House
 from .models.games import Game, GameRank
+from .models.content import Page, PageText
 from .managers.usersmanger import dox_user
 from django.db.models.query import QuerySet
 from django.utils.html import format_html
@@ -89,3 +90,5 @@ admin.site.register(Solution, SolutionAdmin)
 admin.site.register(House, GeneralAdmin)
 admin.site.register(Game, GeneralAdmin)
 admin.site.register(GameRank, GeneralAdmin)
+admin.site.register(Page, GeneralAdmin)
+admin.site.register(PageText, GeneralAdmin)
